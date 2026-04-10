@@ -1233,8 +1233,10 @@ async function saveRPEOnly(di,ei,exName){
   saveToHistory(di,ei,undefined,notes,rpeVal);
   if(navigator.vibrate) navigator.vibrate([50,30,100]);
   if(googleAccessToken){
-    console.log('Writing RPE to sheet: row', ex.rowIndex, 'RPE:', rpeVal);
-    writeToSheet(ex.rowIndex, rpeVal!==undefined?undefined:undefined, rpeVal, notes);
+    console.log('Writing RPE only to sheet: row', ex.rowIndex, 'RPE:', rpeVal);
+    writeToSheet(ex.rowIndex, undefined, rpeVal, notes).then(ok=>{
+      setSyncState(ok?'ok':'error');
+    });
   }
   renderWorkout();updateProgress();renderHistory();
 }
