@@ -2,253 +2,872 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>My Training Log</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRAIN">
+<meta name="theme-color" content="#0a0a0a">
+<title>TRAIN</title>
+<link rel="manifest" href="#" id="manifest-link">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  :root {
-    --blue: #1a6fd4;
-    --blue-dark: #155bb5;
-    --blue-light: #e8f0fb;
-    --bg: #f0f2f5;
-    --white: #ffffff;
-    --text: #1a1a2e;
-    --text2: #555770;
-    --text3: #9a9bb0;
-    --border: #e2e5ec;
-    --green: #22c55e;
-    --green-light: #dcfce7;
-    --radius: 12px;
-    --radius-lg: 16px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
+:root{
+  --bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--surface3:#242424;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --red:#e8321a;--red-dim:rgba(232,50,26,0.12);--red-dim2:rgba(232,50,26,0.07);
+  --text:#f0f0ee;--text2:#888;--text3:#444;
+  --green:#3ddc84;--green-dim:rgba(61,220,132,0.1);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.1);
+  --purple:#818cf8;
+  --radius:12px;--radius-lg:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
 
-  #setup { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
-  .setup-header { background: var(--blue); color: white; border-radius: var(--radius-lg); padding: 2rem 1.5rem; width: 100%; max-width: 420px; margin-bottom: 1rem; text-align: center; }
-  .setup-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-  .setup-header p { font-size: 13px; opacity: 0.85; }
-  .setup-card { background: var(--white); border-radius: var(--radius-lg); padding: 1.5rem; width: 100%; max-width: 420px; border: 1px solid var(--border); }
-  .setup-card h2 { font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; }
-  .setup-step { display: flex; gap: 12px; margin-bottom: 1.25rem; }
-  .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .step-body p { font-size: 13px; color: var(--text2); line-height: 1.5; }
-  .step-body a { color: var(--blue); text-decoration: none; }
-  .step-body strong { color: var(--text); font-weight: 600; }
-  .field { margin-top: 8px; }
-  .field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 14px; color: var(--text); font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
-  .field input:focus { border-color: var(--blue); background: white; }
-  .field input::placeholder { color: var(--text3); }
-  .btn-connect { width: 100%; padding: 14px; background: var(--blue); color: white; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; margin-top: 1.25rem; }
-  .setup-note { font-size: 12px; color: var(--text3); text-align: center; margin-top: 12px; line-height: 1.6; }
+/* ANIMATIONS */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes popIn{0%{transform:scale(0.85);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes celebrate{0%{transform:scale(1)}25%{transform:scale(1.08)}50%{transform:scale(0.96)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes timerPulse{0%,100%{color:var(--red)}50%{color:#ff6b4a}}
 
-  #app { display: none; flex-direction: column; height: 100vh; max-width: 480px; margin: 0 auto; }
+.animate-in{animation:fadeIn 0.3s ease forwards;}
+.animate-slide-up{animation:slideUp 0.35s ease forwards;}
+.animate-slide-right{animation:slideInRight 0.3s ease forwards;}
+.animate-slide-left{animation:slideInLeft 0.3s ease forwards;}
+.animate-pop{animation:popIn 0.25s ease forwards;}
 
-  .topbar { background: var(--blue); color: white; flex-shrink: 0; }
-  .topbar-main { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; }
-  .topbar-title { font-size: 18px; font-weight: 700; }
-  .topbar-sync { font-size: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px; padding: 0 16px 12px; }
-  .menu-btn { background: none; border: none; color: white; cursor: pointer; padding: 4px; display: flex; flex-direction: column; gap: 4px; }
-  .menu-btn span { display: block; width: 20px; height: 2px; background: white; border-radius: 2px; }
-  .profile-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+/* SKELETON */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:400px 100%;animation:shimmer 1.4s infinite;}
+.skeleton-line{height:12px;border-radius:6px;margin-bottom:8px;}
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
 
-  .content { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 2rem;}
+.splash-logo{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:6px;color:var(--text);line-height:1;margin-bottom:4px;animation:popIn 0.6s ease forwards;}
+.splash-logo span{color:var(--red);}
+.splash-date{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:2.5rem;}
+.quote-card{width:100%;max-width:380px;border:1px solid var(--border2);border-radius:var(--radius-lg);padding:1.75rem;background:var(--surface);animation:slideUp 0.5s 0.2s ease both;}
+.quote-mark{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--red);line-height:0.6;margin-bottom:1rem;display:block;}
+.quote-text{font-size:19px;font-weight:300;color:var(--text);line-height:1.55;margin-bottom:1.25rem;font-style:italic;}
+.quote-author{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--red);font-weight:600;}
+.splash-btn{width:100%;max-width:380px;margin-top:1.75rem;padding:17px;background:var(--red);color:white;border:none;border-radius:var(--radius);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;cursor:pointer;transition:opacity 0.15s,transform 0.1s;animation:slideUp 0.5s 0.35s ease both;}
+.splash-btn:active{opacity:0.85;transform:scale(0.98);}
 
-  .workout-heading { font-size: 17px; font-weight: 700; color: var(--blue); margin-bottom: 14px; }
-  .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 14px; scrollbar-width: none; }
-  .day-scroll::-webkit-scrollbar { display: none; }
-  .day-chip { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1.5px solid var(--border); color: var(--text2); background: var(--white); flex-shrink: 0; }
-  .day-chip.active { background: var(--blue); color: white; border-color: var(--blue); font-weight: 600; }
+/* SETUP */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:2rem 1.25rem 3rem;}
+.setup-logo{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:4px;color:var(--text);margin-bottom:0.2rem;}
+.setup-logo span{color:var(--red);}
+.setup-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:2rem;}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem;}
+.setup-card h2{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:1.25rem;font-weight:600;}
+.s-step{display:flex;gap:12px;margin-bottom:1.25rem;align-items:flex-start;}
+.s-num{width:22px;height:22px;border-radius:50%;background:var(--red);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.s-body p{font-size:13px;color:var(--text2);line-height:1.6;}
+.s-body a{color:var(--red);text-decoration:none;}
+.s-body strong{color:var(--text);font-weight:500;}
+.field{margin-top:8px;}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
+.field input:focus{border-color:var(--red);}
+.field input::placeholder{color:var(--text3);}
+.btn-connect{width:100%;padding:16px;background:var(--red);color:white;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;border:none;border-radius:var(--radius);cursor:pointer;margin-top:1rem;transition:opacity 0.15s,transform 0.1s;}
+.btn-connect:active{opacity:0.85;transform:scale(0.98);}
+.error-msg{background:var(--red-dim2);border:1px solid rgba(232,50,26,0.25);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--red);margin-top:1rem;line-height:1.6;display:none;}
 
-  .progress-wrap { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 12px 16px; margin-bottom: 14px; }
-  .progress-labels { display: flex; justify-content: space-between; font-size: 13px; color: var(--text2); margin-bottom: 8px; }
-  .progress-labels span:last-child { font-weight: 600; color: var(--blue); }
-  .progress-track { height: 6px; background: var(--border); border-radius: 6px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--blue); border-radius: 6px; transition: width 0.4s ease; }
+/* APP */
+#app{display:none;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;}
 
-  .ex-card { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; }
-  .ex-card-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 16px; }
-  .ex-title { font-size: 15px; font-weight: 600; color: var(--text); }
-  .ex-subtitle { font-size: 13px; color: var(--text2); margin-top: 3px; }
-  .ex-badge { flex-shrink: 0; margin-left: 10px; margin-top: 2px; }
-  .badge-rir-done { font-size: 13px; font-weight: 600; color: var(--blue); }
-  .badge-logged { font-size: 12px; font-weight: 600; color: var(--green); background: var(--green-light); padding: 4px 10px; border-radius: 20px; }
-  .btn-enter-rir { background: var(--blue); color: white; border: none; border-radius: 20px; padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.topbar-main{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;}
+.topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--text);}
+.topbar-logo span{color:var(--red);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.sync-badge{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:0.06em;}
+.sync-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.sync-dot.syncing{animation:pulse 1s ease-in-out infinite;}
+.sync-dot.error{background:var(--red);}
+.topbar-btn{height:28px;padding:0 10px;border-radius:14px;background:transparent;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.1em;transition:border-color 0.15s,color 0.15s;}
+.topbar-btn:hover{border-color:var(--border);color:var(--text2);}
 
-  .tag { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; margin-top: 3px; }
-  .tag-ss { background: #fff3cd; color: #856404; }
-  .tag-alt { background: #f3e8ff; color: #6b21a8; }
-  .tag-warm { background: var(--blue-light); color: var(--blue); }
+/* CONTENT */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
-  .rir-panel { border-top: 1px solid var(--border); padding: 16px; background: #f8f9fc; display: none; }
-  .rir-panel.open { display: block; }
-  .rir-panel-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
-  .rir-section-label { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
-  .rir-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .rir-btn { flex: 1; min-width: 48px; padding: 13px 6px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--white); font-size: 17px; font-weight: 600; color: var(--text); cursor: pointer; text-align: center; font-family: 'Inter', sans-serif; transition: all 0.12s; }
-  .rir-btn.selected { background: var(--blue); color: white; border-color: var(--blue); }
-  .notes-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
-  .notes-input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 14px; color: var(--text); font-family: 'Inter', sans-serif; background: var(--white); outline: none; resize: none; }
-  .notes-input:focus { border-color: var(--blue); }
-  .btn-save { width: 100%; padding: 14px; background: var(--blue); color: white; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 14px; letter-spacing: 0.05em; }
-  .btn-save:disabled { background: var(--text3); cursor: default; }
+/* HOME */
+#view-home{padding:16px;}
+.home-greeting{margin-bottom:20px;}
+.home-greeting-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:4px;}
+.home-greeting-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:2px;color:var(--text);line-height:1;}
+.home-greeting-name span{color:var(--red);}
+.home-date{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.25rem 1.75rem;cursor:pointer;position:relative;overflow:hidden;transition:background 0.15s,transform 0.1s;}
+.home-card:active{background:var(--surface2);transform:scale(0.97);}
+.home-card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--text);line-height:1;margin-bottom:6px;}
+.home-card-sub{font-size:10px;color:var(--text3);line-height:1.5;text-transform:uppercase;letter-spacing:0.07em;}
+.home-card-accent{position:absolute;bottom:0;left:0;right:0;height:3px;}
+.home-card.workouts .home-card-accent{background:var(--red);}
+.home-card.bio .home-card-accent{background:var(--green);}
+.home-card.history .home-card-accent{background:var(--amber);}
+.home-card.program .home-card-accent{background:var(--purple);}
 
-  .prog-card { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; margin-bottom: 20px; }
-  .prog-day-head { padding: 12px 16px; background: var(--blue-light); border-bottom: 1px solid var(--border); }
-  .prog-day-title { font-size: 15px; font-weight: 700; color: var(--text); }
-  .prog-day-focus { font-size: 12px; color: var(--blue); font-weight: 500; margin-top: 2px; }
-  .prog-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .prog-row:last-child { border-bottom: none; }
-  .prog-name { font-size: 14px; font-weight: 500; color: var(--text); }
-  .prog-detail { font-size: 13px; color: var(--text2); text-align: right; }
-  .prog-rir { font-size: 13px; font-weight: 600; color: var(--blue); margin-top: 2px; }
-  .yt-link { font-size: 12px; color: var(--blue); text-decoration: none; display: block; margin-top: 2px; }
+/* VIEWS */
+.view{display:none;}
+.view.active{display:block;}
+.view-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;}
+.back-btn{height:28px;padding:0 12px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.1em;flex-shrink:0;transition:background 0.15s;}
+.back-btn:active{background:var(--surface3);}
+.view-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);}
+.view-body{padding:16px;}
 
-  .hist-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .hist-stat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-  .hist-stat-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-  .hist-stat-val { font-size: 26px; font-weight: 700; color: var(--blue); }
-  .hist-stat-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .hist-entry { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; }
-  .hist-entry-date { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
-  .hist-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-  .hist-row:last-child { border-bottom: none; }
-  .hist-row-name { color: var(--text); font-weight: 500; }
-  .hist-row-rir { font-weight: 700; color: var(--blue); flex-shrink: 0; margin-left: 8px; }
-  .hist-note { font-size: 12px; color: var(--text3); margin-top: 2px; font-style: italic; }
-  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; line-height: 1.7; }
-  .loading { text-align: center; padding: 3rem 1rem; color: var(--text2); font-size: 14px; }
-  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; margin: 0 auto 1rem; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .error-box { background: #fff5f5; border: 1px solid #fecaca; border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: #dc2626; margin-bottom: 16px; line-height: 1.6; }
+/* SESSION CLOCK */
+.session-clock{display:flex;align-items:center;gap:8px;margin-left:auto;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text3);}
+.session-clock.running{color:var(--red);}
 
-  .bottom-nav { background: var(--white); border-top: 1px solid var(--border); display: flex; flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
-  .bnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 8px; background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 11px; color: var(--text3); font-weight: 500; }
-  .bnav-btn.active { color: var(--blue); }
-  .bnav-icon { font-size: 20px; line-height: 1; }
+/* DAY PILLS */
+.day-scroll{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none;border-bottom:1px solid var(--border);}
+.day-scroll::-webkit-scrollbar{display:none;}
+.day-pill{padding:6px 16px;border-radius:20px;font-family:'Bebas Neue',sans-serif;font-size:13px;font-weight:400;letter-spacing:0.08em;white-space:nowrap;cursor:pointer;border:1px solid var(--border2);color:var(--text2);background:transparent;flex-shrink:0;transition:all 0.15s;}
+.day-pill.active{background:var(--red);color:white;border-color:var(--red);}
 
-  .section-tab { display: none; }
-  .section-tab.active { display: block; }
+/* PROGRESS BAR */
+.prog-wrap{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em;}
+.prog-labels span:last-child{color:var(--red);font-weight:600;}
+.prog-track{height:3px;background:var(--surface3);border-radius:3px;}
+.prog-fill{height:100%;background:var(--red);border-radius:3px;transition:width 0.5s ease;}
+
+/* REST TIMER */
+.rest-timer-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:none;}
+.rest-timer-bar.active{display:flex;align-items:center;gap:12px;}
+.rest-timer-label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);flex:1;}
+.rest-timer-label span{display:block;font-size:11px;color:var(--text2);margin-top:1px;}
+.rest-timer-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--red);animation:timerPulse 1s ease-in-out infinite;}
+.rest-timer-track{flex:1;height:3px;background:var(--surface3);border-radius:3px;}
+.rest-timer-fill{height:100%;background:var(--red);border-radius:3px;transition:width 0.5s linear;}
+.rest-skip-btn{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.08em;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;}
+
+/* EXERCISE CARDS */
+.ex-list{padding:12px 16px 80px;}
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;transition:border-color 0.3s;}
+.ex-card.done{border-color:rgba(61,220,132,0.3);}
+.ex-card.pr-card{border-color:rgba(245,158,11,0.4);}
+.ex-card-head{padding:14px 16px;}
+.ex-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.ex-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.2;}
+.ex-focus{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-top:2px;}
+.ex-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:10px;flex-shrink:0;}
+.badge{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.badge-need{background:var(--red-dim2);color:var(--red);border:1px solid rgba(232,50,26,0.25);cursor:pointer;}
+.badge-done{background:var(--green-dim);color:var(--green);border:1px solid rgba(61,220,132,0.25);}
+.badge-rpe{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.25);}
+.badge-neutral{background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
+.badge-pr{background:rgba(245,158,11,0.15);color:var(--amber);border:1px solid rgba(245,158,11,0.35);}
+.ex-meta{display:flex;gap:16px;margin-bottom:10px;}
+.ex-meta-item{display:flex;flex-direction:column;gap:2px;}
+.ex-meta-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);}
+.ex-meta-val{font-size:13px;font-weight:500;color:var(--text2);}
+.ex-video-link{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--red);text-decoration:none;font-weight:500;letter-spacing:0.02em;}
+.ex-video-link::before{content:'▶';font-size:8px;}
+
+/* SET TRACKER */
+.set-tracker{display:flex;gap:6px;margin-bottom:10px;align-items:center;}
+.set-tracker-label{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-right:4px;}
+.set-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;}
+.set-dot:active{transform:scale(0.9);}
+.set-dot.done{background:var(--red);border-color:var(--red);color:white;}
+.set-dot.final{border-color:var(--red);color:var(--red);}
+
+/* TAGS */
+.tag{display:inline-block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:4px;margin-top:3px;}
+.tag-ss{background:rgba(245,158,11,0.12);color:var(--amber);}
+.tag-alt{background:rgba(129,140,248,0.12);color:var(--purple);}
+.tag-warm{background:var(--red-dim2);color:var(--red);}
+
+/* RIR / RPE PANEL */
+.rir-panel{border-top:1px solid var(--border);padding:16px;background:var(--surface2);display:none;animation:slideUp 0.2s ease forwards;}
+.rir-panel.open{display:block;}
+.rir-panel-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--text);margin-bottom:12px;}
+.rir-section-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px;}
+.rir-btns{display:flex;gap:6px;margin-bottom:16px;}
+.rir-btn{flex:1;padding:14px 4px;border-radius:10px;border:1px solid var(--border2);background:var(--surface3);font-size:18px;font-weight:700;color:var(--text2);cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all 0.12s;}
+.rir-btn:active{transform:scale(0.93);}
+.rir-btn.selected{background:var(--red);color:white;border-color:var(--red);animation:popIn 0.2s ease;}
+.rpe-wrap{margin-bottom:16px;}
+.rpe-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.rpe-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);}
+.rpe-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;color:var(--red);}
+.rpe-val span{font-size:13px;color:var(--text3);font-family:'Inter',sans-serif;margin-left:2px;}
+.rpe-slider{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:var(--surface3);outline:none;cursor:pointer;}
+.rpe-slider::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--red);cursor:pointer;border:2px solid var(--surface2);}
+.rpe-slider::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--red);cursor:pointer;border:2px solid var(--surface2);}
+.rpe-desc{font-size:11px;color:var(--text2);margin-top:6px;min-height:16px;font-style:italic;}
+.rpe-scale{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:4px;}
+.notes-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:8px;}
+.notes-input{width:100%;border:1px solid var(--border2);border-radius:10px;padding:10px 13px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;background:var(--surface3);outline:none;resize:none;transition:border-color 0.2s;}
+.notes-input:focus{border-color:var(--red);}
+.panel-actions{display:flex;gap:8px;margin-top:14px;}
+.btn-save{flex:1;padding:14px;background:var(--red);color:white;border:none;border-radius:var(--radius);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;cursor:pointer;transition:opacity 0.15s,transform 0.1s;}
+.btn-save:active{opacity:0.85;transform:scale(0.98);}
+.btn-save:disabled{background:var(--surface3);color:var(--text3);cursor:default;}
+.btn-flag{padding:14px 16px;background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:var(--radius);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer;}
+.logged-panel{border-top:1px solid var(--border);padding:12px 16px;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;}
+.undo-btn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;padding:4px 0;}
+
+/* SESSION COMPLETE */
+#session-complete{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;}
+.session-complete-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:380px;animation:popIn 0.3s ease;}
+.sc-logo{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:var(--red);text-align:center;margin-bottom:0.25rem;}
+.sc-subtitle{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);text-align:center;margin-bottom:1.5rem;}
+.sc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.5rem;}
+.sc-stat{background:var(--surface2);border-radius:var(--radius);padding:12px 8px;text-align:center;}
+.sc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);}
+.sc-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);margin-top:2px;}
+.sc-entries{margin-bottom:1.5rem;}
+.sc-entry-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sc-entry-row:last-child{border-bottom:none;}
+.sc-entry-name{color:var(--text);font-weight:500;}
+.sc-entry-vals{display:flex;gap:8px;align-items:center;}
+.sc-rir{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);}
+.sc-rpe{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--amber);}
+.sc-pr-badge{font-size:9px;font-weight:600;background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:2px 6px;border-radius:10px;}
+.btn-done{width:100%;padding:14px;background:var(--red);color:white;border:none;border-radius:var(--radius);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;cursor:pointer;}
+
+/* HISTORY */
+.hist-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.hist-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+.hist-stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:6px;}
+.hist-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--red);line-height:1;}
+.hist-stat-sub{font-size:11px;color:var(--text3);margin-top:4px;}
+.hist-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;}
+.hist-entry-date{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;}
+.hist-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);}
+.hist-row:last-child{border-bottom:none;}
+.hist-row-name{font-size:13px;color:var(--text);}
+.hist-note{font-size:11px;color:var(--text3);margin-top:2px;font-style:italic;}
+.hist-row-vals{text-align:right;flex-shrink:0;margin-left:8px;}
+.hist-rir{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);}
+.hist-rpe{font-size:11px;color:var(--amber);font-weight:600;margin-top:2px;}
+
+/* CHART */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;}
+.chart-title{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:12px;}
+.chart-svg{width:100%;overflow:visible;}
+
+/* PROGRAM */
+.prog-day-block{margin-bottom:16px;}
+.prog-day-head{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:12px 16px;border-bottom:none;}
+.prog-day-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--text);}
+.prog-day-focus{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);margin-top:2px;}
+.prog-table-card{background:var(--surface);border:1px solid var(--border);border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);}
+.prog-row:last-child{border-bottom:none;}
+.prog-ex-name{font-size:13px;font-weight:500;color:var(--text);}
+.prog-yt{display:block;font-size:10px;color:var(--red);text-decoration:none;margin-top:2px;}
+.prog-yt::before{content:'▶ ';}
+.prog-detail{font-size:12px;color:var(--text3);text-align:right;}
+.prog-rir-val{font-size:12px;color:var(--red);font-weight:600;margin-top:2px;}
+
+/* BIO */
+.bio-table-wrap{overflow-x:auto;}
+.bio-table{width:100%;border-collapse:collapse;font-size:13px;}
+.bio-table th{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;font-weight:600;}
+.bio-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap;}
+.bio-table td:first-child{color:var(--text);font-weight:500;}
+
+/* BOTTOM NAV */
+.bottom-nav{background:var(--surface);border-top:1px solid var(--border);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);}
+.bnav-btn{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 4px;background:none;border:none;border-top:2px solid transparent;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.12em;color:var(--text3);transition:color 0.15s,border-color 0.15s;}
+.bnav-btn.active{color:var(--red);border-top-color:var(--red);}
+
+/* GOOGLE AUTH */
+.google-btn{width:100%;padding:14px;background:white;color:#1a1a2e;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px;transition:opacity 0.15s;}
+.google-btn:hover{opacity:0.9;}
+.google-btn svg{width:20px;height:20px;flex-shrink:0;}
+.auth-status{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;}
+.auth-status-text{font-size:13px;color:var(--text2);}
+.auth-status-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.auth-status-dot.connected{background:var(--green);}
+.signout-btn{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.08em;color:var(--text3);background:none;border:none;cursor:pointer;padding:0;}
+/* UTILS */
+.loading{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px;}
+.spinner{width:28px;height:28px;border:2px solid var(--surface3);border-top-color:var(--red);border-radius:50%;margin:0 auto 1rem;animation:spin 0.7s linear infinite;}
+.error-box{background:var(--red-dim2);border:1px solid rgba(232,50,26,0.25);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--red);line-height:1.6;margin-bottom:16px;}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px;line-height:1.7;}
+.section-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:12px;font-weight:600;}
 </style>
 </head>
 <body>
 
-<div id="setup">
-  <div class="setup-header">
-    <h1>My Training Log</h1>
-    <p>Connected to your Google Sheet</p>
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">TRA<span>I</span>N</div>
+  <div class="splash-date" id="splash-date"></div>
+  <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;">Program by <a href="https://www.passion8telifestyle.com/" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">Passion8te Lifestyle</a></div>
+  <div class="quote-card">
+    <span class="quote-mark">"</span>
+    <div class="quote-text" id="quote-text"></div>
+    <div class="quote-author" id="quote-author"></div>
   </div>
+  <button class="splash-btn" onclick="enterApp()">LET'S GO</button>
+</div>
+
+<!-- SETUP -->
+<div id="setup">
+  <div class="setup-logo">TRA<span>I</span>N</div>
+  <div class="setup-sub">Connect your Google Sheet</div>
   <div class="setup-card">
-    <h2>Connect your sheet</h2>
-    <div class="setup-step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <p><strong>Get a Google API Key</strong> — go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a>, create a project, enable <strong>Google Sheets API</strong>, then Credentials → Create API Key.</p>
-      </div>
+    <h2>Setup</h2>
+    <div class="s-step">
+      <div class="s-num">1</div>
+      <div class="s-body"><p><strong>Get a Google API Key</strong> — <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → New Project → Enable Google Sheets API → Credentials → Create API Key</p></div>
     </div>
-    <div class="setup-step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <p><strong>Share your sheet</strong> — click Share → Anyone with the link → <strong>Viewer</strong>.</p>
-      </div>
+    <div class="s-step">
+      <div class="s-num">2</div>
+      <div class="s-body"><p><strong>Share your sheet</strong> — Share → Anyone with the link → Viewer</p></div>
     </div>
-    <div class="setup-step">
-      <div class="step-num">3</div>
-      <div class="step-body">
+    <div class="s-step">
+      <div class="s-num">3</div>
+      <div class="s-body">
         <p><strong>Enter your details</strong></p>
-        <div class="field"><input id="inp-sid" type="text" placeholder="Sheet ID" value="1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM" /></div>
-        <div class="field"><input id="inp-key" type="text" placeholder="Google API Key" /></div>
-        <div class="field"><input id="inp-tab" type="text" placeholder="Tab name (e.g. Sheet1)" value="Sheet1" /></div>
+        <div class="field"><input id="inp-sid" type="text" placeholder="Sheet ID" value="1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM"/></div>
+        <div class="field"><input id="inp-key" type="text" placeholder="Google API Key"/></div>
+        <div class="field"><input id="inp-tab" type="text" placeholder="Workout tab name (e.g. Sheet1)" value="Sheet1"/></div>
+        <div class="field"><input id="inp-bio" type="text" placeholder="Bio data tab name (e.g. Bio)" value="Bio"/></div>
       </div>
     </div>
-    <button class="btn-connect" onclick="connect()">Connect &amp; Load Program</button>
-    <p class="setup-note">Your details are saved in your browser only.</p>
+    <button class="btn-connect" onclick="connect()">CONNECT</button>
+    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:12px;">Write-back to Sheet</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;">Sign in with Google to allow the app to write your RIR and RPE data back to your sheet so your trainer can see it.</p>
+      <div id="auth-status-block" style="display:none;">
+        <div class="auth-status">
+          <div style="display:flex;align-items:center;gap:8px;"><div class="auth-status-dot" id="auth-dot"></div><span class="auth-status-text" id="auth-status-text">Not signed in</span></div>
+          <button class="signout-btn" id="signout-btn" onclick="signOut()" style="display:none;">SIGN OUT</button>
+        </div>
+      </div>
+      <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Sign in with Google
+      </button>
+    </div>
+    <div class="error-msg" id="setup-error"></div>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-main">
-      <button class="menu-btn" onclick="goSettings()"><span></span><span></span><span></span></button>
-      <div class="topbar-title">My Training Log</div>
-      <div class="profile-btn">👤</div>
-    </div>
-    <div class="topbar-sync">
-      <span>↻</span><span id="sync-text">Synced to Google Sheet</span>
+      <div class="topbar-logo">TRA<span>I</span>N</div>
+      <div class="topbar-right">
+        <div class="sync-badge"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Synced</span></div>
+        <div id="topbar-auth-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);display:none;" title="Sheet write-back status"></div>
+        <button class="topbar-btn" onclick="goSettings()">SET</button>
+      </div>
     </div>
   </div>
 
-  <div class="content">
-    <div class="section-tab active" id="tab-workout">
-      <div class="workout-heading" id="workout-heading">Today's Workout</div>
-      <div class="day-scroll" id="day-scroll"></div>
-      <div class="progress-wrap" id="prog-wrap" style="display:none">
-        <div class="progress-labels"><span id="prog-label">0 / 0 logged</span><span id="prog-pct">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="content" id="main-content">
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+      <div style="padding:16px;">
+        <div class="home-greeting">
+          <div class="home-greeting-eyebrow">Welcome back</div>
+          <div class="home-greeting-name">LET'S <span>WORK</span></div>
+          <div class="home-date" id="home-date"></div>
+        </div>
+        <div class="home-grid">
+          <div class="home-card workouts" onclick="goView('workouts')">
+            <div class="home-card-title">Workouts</div>
+            <div class="home-card-sub">Log session & RIR</div>
+            <div class="home-card-accent"></div>
+          </div>
+          <div class="home-card bio" onclick="goView('bio')">
+            <div class="home-card-title">Bio Data</div>
+            <div class="home-card-sub">Body measurements</div>
+            <div class="home-card-accent"></div>
+          </div>
+          <div class="home-card history" onclick="goView('history')">
+            <div class="home-card-title">History</div>
+            <div class="home-card-sub">Past sessions</div>
+            <div class="home-card-accent"></div>
+          </div>
+          <div class="home-card program" onclick="goView('program')">
+            <div class="home-card-title">Program</div>
+            <div class="home-card-sub">Full training plan</div>
+            <div class="home-card-accent"></div>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Program powered by</div>
+            <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text2);text-decoration:none;">Passion8te Lifestyle</a>
+          </div>
+          <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);text-decoration:none;font-weight:600;">Visit →</a>
+        </div>
       </div>
-      <div id="workout-cards"><div class="loading"><div class="spinner"></div>Loading your program…</div></div>
     </div>
-    <div class="section-tab" id="tab-history">
-      <div id="history-content"></div>
+
+    <!-- WORKOUTS -->
+    <div id="view-workouts" class="view">
+      <div class="view-header">
+        <button class="back-btn" onclick="goHome()">BACK</button>
+        <div class="view-title">WORKOUTS</div>
+        <div class="session-clock" id="session-clock"></div>
+      </div>
+      <div class="day-scroll" id="day-scroll"></div>
+      <div class="prog-wrap" id="prog-wrap" style="display:none">
+        <div class="prog-labels"><span id="prog-label">0 / 0 logged</span><span id="prog-pct">0%</span></div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="rest-timer-bar" id="rest-timer-bar">
+        <div class="rest-timer-label">Rest Timer<span id="rest-timer-exname"></span></div>
+        <div class="rest-timer-track"><div class="rest-timer-fill" id="rest-timer-fill" style="width:100%"></div></div>
+        <div class="rest-timer-val" id="rest-timer-val">0:00</div>
+        <button class="rest-skip-btn" onclick="skipRest()">SKIP</button>
+      </div>
+      <div class="ex-list" id="workout-cards">
+        <div class="skeleton-card"><div class="skeleton skeleton-line" style="width:60%"></div><div class="skeleton skeleton-line" style="width:40%"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-line" style="width:70%"></div><div class="skeleton skeleton-line" style="width:35%"></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-line" style="width:55%"></div><div class="skeleton skeleton-line" style="width:45%"></div></div>
+      </div>
     </div>
-    <div class="section-tab" id="tab-program">
-      <div id="program-content"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+
+    <!-- BIO -->
+    <div id="view-bio" class="view">
+      <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">BIO DATA</div></div>
+      <div class="view-body" id="bio-content"><div class="loading"><div class="spinner"></div></div></div>
     </div>
+
+    <!-- HISTORY -->
+    <div id="view-history" class="view">
+      <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">HISTORY</div></div>
+      <div class="view-body" id="history-content"></div>
+    </div>
+
+    <!-- PROGRAM -->
+    <div id="view-program" class="view">
+      <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">PROGRAM</div></div>
+      <div class="view-body" id="program-content"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+
   </div>
 
   <nav class="bottom-nav">
-    <button class="bnav-btn active" id="bnav-workout" onclick="switchTab('workout')">
-      <span class="bnav-icon">📊</span>Workout
-    </button>
-    <button class="bnav-btn" id="bnav-history" onclick="switchTab('history')">
-      <span class="bnav-icon">👤</span>History
-    </button>
-    <button class="bnav-btn" id="bnav-program" onclick="switchTab('program')">
-      <span class="bnav-icon">📈</span>Progress
-    </button>
+    <button class="bnav-btn active" id="bnav-home" onclick="goHome()">HOME</button>
+    <button class="bnav-btn" id="bnav-workouts" onclick="goView('workouts')">WORKOUT</button>
+    <button class="bnav-btn" id="bnav-history" onclick="goView('history')">HISTORY</button>
+    <button class="bnav-btn" id="bnav-program" onclick="goView('program')">PROGRAM</button>
   </nav>
 </div>
 
+<!-- SESSION COMPLETE OVERLAY -->
+<div id="session-complete">
+  <div class="session-complete-card">
+    <div class="sc-logo">DONE</div>
+    <div class="sc-subtitle" id="sc-subtitle">Session Complete</div>
+    <div class="sc-stats" id="sc-stats"></div>
+    <div class="sc-entries" id="sc-entries"></div>
+    <button class="btn-done" onclick="closeSessionComplete()">CLOSE</button>
+  </div>
+</div>
+
 <script>
-let sheetId='',apiKey='',sheetName='Sheet1';
+const QUOTES=[
+{text:"I don't stop when I'm tired. I stop when I'm done.",author:"David Goggins"},
+{text:"You are in danger of living a life so comfortable and soft that you will die without ever realizing your true potential.",author:"David Goggins"},
+{text:"The most important conversations you'll ever have are the ones you'll have with yourself.",author:"David Goggins"},
+{text:"Suffering is the true test of life.",author:"David Goggins"},
+{text:"Don't let your mind bully your body.",author:"David Goggins"},
+{text:"The only way that you can hurt the body is if you allow the mind to do it.",author:"David Goggins"},
+{text:"Be willing to suffer. That's where growth lives.",author:"David Goggins"},
+{text:"You will never learn from people if you always tap out when it gets uncomfortable.",author:"David Goggins"},
+{text:"Motivation is crap. Motivation comes and goes. When you're driven, whatever is in front of you will get destroyed.",author:"David Goggins"},
+{text:"Nobody cares what you did yesterday. What have you done today to better yourself?",author:"David Goggins"},
+{text:"The pain that you are willing to endure is measured by how bad you want it.",author:"David Goggins"},
+{text:"Get comfortable being uncomfortable.",author:"David Goggins"},
+{text:"Stay hard.",author:"David Goggins"},
+{text:"When you think you're done, you're only at 40% of what your body's capable of.",author:"David Goggins"},
+{text:"Everybody wants a shortcut. I don't believe in shortcuts. You have to earn it.",author:"Arnold Schwarzenegger"},
+{text:"The last three or four reps is what makes the muscle grow.",author:"Arnold Schwarzenegger"},
+{text:"Strength does not come from winning. Your struggles develop your strengths.",author:"Arnold Schwarzenegger"},
+{text:"The mind is the limit. As long as the mind can envision the fact that you can do something, you can do it.",author:"Arnold Schwarzenegger"},
+{text:"You can have results or excuses. Not both.",author:"Arnold Schwarzenegger"},
+{text:"The worst thing I can be is the same as everybody else.",author:"Arnold Schwarzenegger"},
+{text:"Earn your body.",author:"Arnold Schwarzenegger"},
+{text:"If you don't find the time, if you don't do the work, you don't get the results.",author:"Arnold Schwarzenegger"},
+{text:"The pain you feel today will be the strength you feel tomorrow.",author:"Arnold Schwarzenegger"},
+{text:"I hated every minute of training, but I said, don't quit. Suffer now and live the rest of your life as a champion.",author:"Muhammad Ali"},
+{text:"Don't count the days, make the days count.",author:"Muhammad Ali"},
+{text:"He who is not courageous enough to take risks will accomplish nothing in life.",author:"Muhammad Ali"},
+{text:"Champions aren't made in gyms. Champions are made from something they have deep inside.",author:"Muhammad Ali"},
+{text:"I am the greatest, I said that even before I knew I was.",author:"Muhammad Ali"},
+{text:"If my mind can conceive it, and my heart can believe it — then I can achieve it.",author:"Muhammad Ali"},
+{text:"The fight is won or lost far away from witnesses — behind the lines, in the gym, and out there on the road.",author:"Muhammad Ali"},
+{text:"I run on the road long before I dance under the lights.",author:"Muhammad Ali"},
+{text:"Earn your next breath.",author:"Kobe Bryant"},
+{text:"Everything negative — pressure, challenges — is all an opportunity for me to rise.",author:"Kobe Bryant"},
+{text:"If you're afraid to fail, then you're probably going to fail.",author:"Kobe Bryant"},
+{text:"Great things come from hard work and perseverance. No excuses.",author:"Kobe Bryant"},
+{text:"The moment you give up is the moment you let someone else win.",author:"Kobe Bryant"},
+{text:"Once you know what failure feels like, determination chases success.",author:"Kobe Bryant"},
+{text:"I can't relate to lazy people. We don't speak the same language.",author:"Kobe Bryant"},
+{text:"I have self-doubt. I have insecurity. I have fear of failure. But I don't capitulate to it.",author:"Kobe Bryant"},
+{text:"I've missed more than 9,000 shots in my career. I've failed over and over again in my life. And that is why I succeed.",author:"Michael Jordan"},
+{text:"Some people want it to happen, some wish it would happen, others make it happen.",author:"Michael Jordan"},
+{text:"Obstacles don't have to stop you. Figure out how to climb it.",author:"Michael Jordan"},
+{text:"Heart is what separates the good from the great.",author:"Michael Jordan"},
+{text:"You have to expect things of yourself before you can do them.",author:"Michael Jordan"},
+{text:"I can accept failure, everyone fails at something. But I can't accept not trying.",author:"Michael Jordan"},
+{text:"Never say never because limits, like fears, are often just an illusion.",author:"Michael Jordan"},
+{text:"I've always believed that if you put in the work, the results will come.",author:"Michael Jordan"},
+{text:"All those mornings you didn't want to get up, you got up. Now when the moment comes, your body knows what to do.",author:"LeBron James"},
+{text:"Don't be afraid of failure. This is the way to succeed.",author:"LeBron James"},
+{text:"I like criticism. It makes you strong.",author:"LeBron James"},
+{text:"Every night on the court I give my all.",author:"LeBron James"},
+{text:"Passion first and everything will fall into place.",author:"LeBron James"},
+{text:"A lot of late nights in the gym, a lot of early mornings, especially when I was trying to get the dream to become a reality.",author:"LeBron James"},
+{text:"Ain't nothing to it but to do it.",author:"Ronnie Coleman"},
+{text:"Everybody wants to be a bodybuilder, but don't nobody want to lift no heavy-ass weights.",author:"Ronnie Coleman"},
+{text:"Pain is weakness leaving the body.",author:"Ronnie Coleman"},
+{text:"Dedication is a lifestyle.",author:"Ronnie Coleman"},
+{text:"Light weight baby! But heavy on the dedication.",author:"Ronnie Coleman"},
+{text:"This ain't just a sport, it's a way of life.",author:"CT Fletcher"},
+{text:"Command your muscles. You control them, they don't control you.",author:"CT Fletcher"},
+{text:"There are no shortcuts to any place worth going.",author:"CT Fletcher"},
+{text:"Obsession is a gift. Don't waste it.",author:"CT Fletcher"},
+{text:"You gotta go beyond your limits. That's where the magic is.",author:"CT Fletcher"},
+{text:"Blood, sweat and respect. First two you give, last one you earn.",author:"Dwayne Johnson"},
+{text:"All successes begin with self-discipline. It starts with you.",author:"Dwayne Johnson"},
+{text:"Success at anything will always come down to this: focus and effort.",author:"Dwayne Johnson"},
+{text:"Wake up determined. Go to bed satisfied.",author:"Dwayne Johnson"},
+{text:"Be the person that when your feet touch the floor in the morning the devil says 'Aw sh*t, they're up'.",author:"Dwayne Johnson"},
+{text:"Think back 5 years ago. Think ahead 5 years. Be unstoppable.",author:"Dwayne Johnson"},
+{text:"With drive and a bit of talent, you can move mountains.",author:"Dwayne Johnson"},
+{text:"You don't need talent to outwork someone.",author:"Dwayne Johnson"},
+{text:"I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",author:"Bruce Lee"},
+{text:"If you always put limits on everything you do, it will spread into your life. There are no limits. There are only plateaus.",author:"Bruce Lee"},
+{text:"Knowing is not enough, we must apply. Willing is not enough, we must do.",author:"Bruce Lee"},
+{text:"Do not pray for an easy life, pray for the strength to endure a difficult one.",author:"Bruce Lee"},
+{text:"The successful warrior is the average man, with laser-like focus.",author:"Bruce Lee"},
+{text:"As you think, so shall you become.",author:"Bruce Lee"},
+{text:"Long-term consistency trumps short-term intensity.",author:"Bruce Lee"},
+{text:"Talent without working hard is nothing.",author:"Cristiano Ronaldo"},
+{text:"I don't have time for hobbies. I treat my job as a hobby. It's something I love doing.",author:"Cristiano Ronaldo"},
+{text:"I am not a perfectionist, but I feel an endless need to learn, to improve.",author:"Cristiano Ronaldo"},
+{text:"Hard work beats talent when talent doesn't work hard.",author:"Cristiano Ronaldo"},
+{text:"I don't mind people hating me, because it pushes me.",author:"Cristiano Ronaldo"},
+{text:"You have to fight to reach your dream. You have to sacrifice and work hard for it.",author:"Lionel Messi"},
+{text:"There is always something to improve.",author:"Lionel Messi"},
+{text:"The day you think there is no improvements to be made is a sad one for any player.",author:"Lionel Messi"},
+{text:"I always want more. Whether it's a goal, a title, something. I'm never satisfied.",author:"Lionel Messi"},
+{text:"Every year I try to grow as a player and not get stuck in a rut.",author:"Lionel Messi"},
+{text:"Once I set a goal, I feel an obligation to myself to do it.",author:"Serena Williams"},
+{text:"I really think a champion is defined not by their wins but by how they can recover when they fall.",author:"Serena Williams"},
+{text:"You have to believe in yourself when no one else does — that makes you a winner right there.",author:"Venus Williams"},
+{text:"I am lucky that whatever fear I have inside me, my desire to win is always stronger.",author:"Serena Williams"},
+{text:"Being negative and lazy is a disease. Be proactive and hard working.",author:"Phil Heath"},
+{text:"I go into the gym, and I'm not leaving until I get what I came for.",author:"Phil Heath"},
+{text:"Excuses are for people who don't want it bad enough.",author:"Phil Heath"},
+{text:"Success isn't given. It's earned in the gym.",author:"Jay Cutler"},
+{text:"I don't care about getting comfortable. I care about getting better.",author:"Jay Cutler"},
+{text:"Dedication takes a whole lifetime. Not just a season.",author:"Jay Cutler"},
+{text:"I am not talented. I am obsessed.",author:"Conor McGregor"},
+{text:"There is no talent here, this is hard work. This is an obsession.",author:"Conor McGregor"},
+{text:"If you have a clear picture in your head that something is going to happen, all the negative energy in the world can't stop it.",author:"Conor McGregor"},
+{text:"I visualise until the visualisation becomes real.",author:"Conor McGregor"},
+{text:"You can't put a limit on anything. The more you dream, the farther you get.",author:"Michael Phelps"},
+{text:"If you want to be the best, you have to do things that other people aren't willing to do.",author:"Michael Phelps"},
+{text:"There will be obstacles. There will be doubters. But with hard work, there are no limits.",author:"Michael Phelps"},
+{text:"I think goals should never be easy, they should force you to work.",author:"Michael Phelps"},
+{text:"Winning is not always the barometer of getting better.",author:"Tiger Woods"},
+{text:"No matter how good you get you can always get better and that's the exciting part.",author:"Tiger Woods"},
+{text:"I get up every morning and I don't care about anything except getting better.",author:"Tiger Woods"},
+{text:"Hard work, dedication. There are no shortcuts.",author:"Tiger Woods"},
+{text:"The more you work out, the more you realize how much more you can do.",author:"Tiger Woods"},
+{text:"Success is no accident. It is hard work, perseverance, learning, studying, sacrifice.",author:"Pele"},
+{text:"The more difficult the victory, the greater the happiness in winning.",author:"Pele"},
+{text:"Enthusiasm is everything. It must be taut and vibrating like a guitar string.",author:"Pele"},
+{text:"Today I will do what others won't, so tomorrow I can accomplish what others can't.",author:"Jerry Rice"},
+{text:"There may be people that have more talent than you, but there's no excuse for anyone to work harder than you do.",author:"Derek Jeter"},
+{text:"To give anything less than your best is to sacrifice the gift.",author:"Steve Prefontaine"},
+{text:"Pain is temporary. It may last a minute, or an hour, or a day, but eventually it will subside. If I quit, it lasts forever.",author:"Lance Armstrong"},
+{text:"Winning isn't everything, but wanting to win is.",author:"Vince Lombardi"},
+{text:"The man on top of the mountain didn't fall there.",author:"Vince Lombardi"},
+{text:"It's not whether you get knocked down; it's whether you get up.",author:"Vince Lombardi"},
+{text:"Perfection is not attainable, but if we chase perfection we can catch excellence.",author:"Vince Lombardi"},
+{text:"Winners never quit and quitters never win.",author:"Vince Lombardi"},
+{text:"When you feel like quitting, think about why you started.",author:"Unknown"},
+{text:"The only bad workout is the one that didn't happen.",author:"Unknown"},
+{text:"No pain, no gain. Shut up and train.",author:"Unknown"},
+{text:"Your body can do it. It's your mind you have to convince.",author:"Unknown"},
+{text:"Push harder than yesterday if you want a different tomorrow.",author:"Unknown"},
+{text:"What seems impossible today will one day become your warm-up.",author:"Unknown"},
+{text:"Train insane or remain the same.",author:"Unknown"},
+{text:"The real workout starts when you want to stop.",author:"Unknown"},
+{text:"Be stronger than your excuses.",author:"Unknown"},
+{text:"Your only limit is your mind.",author:"Unknown"},
+{text:"Don't wish for it. Work for it.",author:"Unknown"},
+{text:"Work hard in silence. Let success make the noise.",author:"Unknown"},
+{text:"Compete against yourself. Not others.",author:"Unknown"},
+{text:"Fall in love with the process and the results will come.",author:"Eric Thomas"},
+{text:"When you want to succeed as bad as you want to breathe, then you'll be successful.",author:"Eric Thomas"},
+{text:"The most important thing is to sacrifice what you are now for what you can become.",author:"Eric Thomas"},
+{text:"Make the rest of your life the best of your life.",author:"Eric Thomas"},
+{text:"Mental toughness is to physical as four is to one.",author:"Bobby Knight"},
+{text:"Do it now. Sometimes 'later' becomes 'never'.",author:"Unknown"},
+{text:"Iron sharpens iron.",author:"Proverbs 27:17"},
+{text:"Be obsessed or be average.",author:"Grant Cardone"},
+{text:"The gym teaches you lessons no classroom ever could.",author:"Unknown"},
+{text:"The iron never lies to you.",author:"Henry Rollins"},
+{text:"If you think lifting weights is dangerous, try being weak. Being weak is dangerous.",author:"Bret Contreras"},
+{text:"Your body is your most priceless possession. Take care of it.",author:"Jack LaLanne"},
+{text:"A champion is someone who gets up when they can't.",author:"Jack Dempsey"},
+{text:"Every morning you have two choices: continue to sleep with your dreams, or wake up and chase them.",author:"Unknown"},
+{text:"Strive for progress, not perfection.",author:"Unknown"},
+{text:"You didn't come this far to only come this far.",author:"Unknown"},
+{text:"The only person you should try to be better than is the person you were yesterday.",author:"Unknown"},
+{text:"It always seems impossible until it's done.",author:"Nelson Mandela"},
+{text:"Believe you can and you're halfway there.",author:"Theodore Roosevelt"},
+{text:"You miss 100% of the shots you don't take.",author:"Wayne Gretzky"},
+{text:"The body achieves what the mind believes.",author:"Napoleon Hill"},
+{text:"Motivation gets you started. Habit keeps you going.",author:"Jim Ryun"},
+{text:"All progress takes place outside the comfort zone.",author:"Michael John Bobak"},
+{text:"Success usually comes to those who are too busy to be looking for it.",author:"Henry David Thoreau"},
+{text:"The difference between ordinary and extraordinary is that little extra.",author:"Jimmy Johnson"},
+{text:"It never gets easier. You just get stronger.",author:"Unknown"},
+{text:"Wake up with determination. Go to bed with satisfaction.",author:"Unknown"},
+{text:"You are what you repeatedly do.",author:"Aristotle"},
+{text:"Take care of your body. It's the only place you have to live.",author:"Jim Rohn"},
+{text:"Discipline is choosing between what you want now and what you want most.",author:"Abraham Lincoln"},
+{text:"Strength does not come from physical capacity. It comes from an indomitable will.",author:"Mahatma Gandhi"},
+{text:"The mind is the athlete. The body is simply the means it uses.",author:"Kareem Abdul-Jabbar"},
+{text:"You can't get much done in life if you only work on the days when you feel good.",author:"Jerry West"},
+{text:"First master the fundamentals.",author:"Larry Bird"},
+{text:"Push yourself again and again. Don't give an inch until the final buzzer sounds.",author:"Larry Bird"},
+{text:"I've got a theory that if you give 100% all of the time, somehow things will work out in the end.",author:"Larry Bird"},
+{text:"Gold medals are made out of sweat, blood, and tears.",author:"Mary Lou Retton"},
+{text:"The vision of a champion is bent over, drenched in sweat, at the point of exhaustion when nobody else is watching.",author:"Mia Hamm"},
+{text:"Pressure is a privilege — it only comes to those who earn it.",author:"Billie Jean King"},
+{text:"A champion is afraid of losing. Everyone else is afraid of winning.",author:"Billie Jean King"},
+{text:"If you don't have confidence, you'll always find a way not to win.",author:"Carl Lewis"},
+{text:"Set your goals high, and don't stop till you get there.",author:"Bo Jackson"},
+{text:"You have to be hungry. Really hungry.",author:"Unknown"},
+{text:"Hustle until your haters ask if you're hiring.",author:"Unknown"},
+{text:"No matter how slow you go, you are still lapping everybody on the couch.",author:"Unknown"},
+{text:"Champions do not become champions when they win the event, but in the hours, weeks, months and years they spend preparing.",author:"T. Alan Armstrong"},
+{text:"If you fail to prepare, you're prepared to fail.",author:"Mark Spitz"},
+{text:"Somewhere in the world someone is training when you are not. When you race him, he will win.",author:"Tom Fleming"},
+{text:"Your biggest challenge isn't someone else. It's the ache in your lungs and the voice inside you that yells 'CAN'T'.",author:"Unknown"},
+{text:"One hour of training a day. 23 hours to be great at everything else.",author:"Unknown"},
+{text:"Show up. Put in the work. Repeat.",author:"Unknown"},
+{text:"My only competition is who I was yesterday.",author:"Unknown"},
+{text:"Suffer the pain of discipline or suffer the pain of regret.",author:"Unknown"},
+{text:"There is no substitute for hard work. There will be disappointments, but you cannot stop.",author:"Thomas Edison"},
+{text:"You have to do what others won't, to achieve what others don't.",author:"Unknown"},
+{text:"Control your mind or it will control you.",author:"Unknown"},
+{text:"Never wish life were easier, wish that you were better.",author:"Jim Rohn"},
+{text:"Training is my meditation, my yoga, my solace, my passion.",author:"Ray Lewis"},
+{text:"The only way to define your limits is by going beyond them.",author:"Arthur C. Clarke"},
+{text:"Be proud but never satisfied.",author:"Unknown"},
+{text:"Every day is another chance to get stronger.",author:"Unknown"},
+];
+
+let sheetId='1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM',apiKey='',sheetName='Sheet1',bioTab='Bio';
 let days=[],activeDay=0;
-let rirLog={},notesLog={},history=[];
+let rirLog={},rpeLog={},notesLog={},setsLog={},history=[],prs={};
 let selectedRIR={};
+let sessionStart=null,sessionTimer=null;
+let restTimer=null,restTotal=0,restRemaining=0,restExName='';
+
+// ── INIT ──
+function initSplash(){
+  const now=new Date();
+  document.getElementById('splash-date').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}).toUpperCase();
+  document.getElementById('home-date').textContent=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+  const start=new Date(now.getFullYear(),0,0);
+  const dayOfYear=Math.floor((now-start)/(1000*60*60*24));
+  const q=QUOTES[dayOfYear%QUOTES.length];
+  document.getElementById('quote-text').textContent=q.text;
+  document.getElementById('quote-author').textContent='— '+q.author;
+}
+
+function enterApp(){
+  document.getElementById('splash').style.display='none';
+  const key=localStorage.getItem('tl_key');
+  if(!key){document.getElementById('setup').style.display='flex';}
+  else{document.getElementById('app').style.display='flex';loadAll();}
+}
 
 function connect(){
   const sid=document.getElementById('inp-sid').value.trim();
   const key=document.getElementById('inp-key').value.trim();
   const tab=document.getElementById('inp-tab').value.trim()||'Sheet1';
-  if(!sid||!key){alert('Please enter Sheet ID and API Key.');return;}
-  sheetId=sid;apiKey=key;sheetName=tab;
-  localStorage.setItem('tl_sid',sid);localStorage.setItem('tl_key',key);localStorage.setItem('tl_tab',tab);
-  loadApp();
+  const bio=document.getElementById('inp-bio').value.trim()||'Bio';
+  if(!sid||!key){showSetupError('Please enter Sheet ID and API Key.');return;}
+  sheetId=sid;apiKey=key;sheetName=tab;bioTab=bio;
+  localStorage.setItem('tl_sid',sid);localStorage.setItem('tl_key',key);
+  localStorage.setItem('tl_tab',tab);localStorage.setItem('tl_bio',bio);
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').style.display='flex';
+  loadAll();
 }
+
+function showSetupError(msg){
+  const el=document.getElementById('setup-error');
+  el.textContent=msg;el.style.display='block';
+}
+
 function goSettings(){
   document.getElementById('app').style.display='none';
   document.getElementById('setup').style.display='flex';
   document.getElementById('inp-sid').value=sheetId;
   document.getElementById('inp-key').value=apiKey;
   document.getElementById('inp-tab').value=sheetName;
+  document.getElementById('inp-bio').value=bioTab;
+  document.getElementById('setup-error').style.display='none';
 }
+
+const GOOGLE_CLIENT_ID='160341454196-qksshbethqn8nqke1tvsplujpbpfe1rr.apps.googleusercontent.com';
+const SHEETS_SCOPE='https://www.googleapis.com/auth/spreadsheets';
+let googleAccessToken=null;
+let tokenClient=null;
+
+function initGoogleAuth(){
+  if(typeof google==='undefined') return;
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:GOOGLE_CLIENT_ID,
+    scope:SHEETS_SCOPE,
+    callback:(response)=>{
+      if(response.error){console.error('Auth error:',response.error);setAuthState(false);return;}
+      googleAccessToken=response.access_token;
+      localStorage.setItem('tl_auth_hint','granted');
+      setAuthState(true);
+      updateTopbarAuthDot(true);
+    }
+  });
+  const hint=localStorage.getItem('tl_auth_hint');
+  if(hint==='granted') document.getElementById('auth-status-block').style.display='block';
+}
+
+function signInWithGoogle(){
+  if(!tokenClient){
+    alert('Google auth not loaded yet. Please wait a moment and try again.');
+    return;
+  }
+  tokenClient.requestAccessToken({prompt:''});
+  document.getElementById('auth-status-block').style.display='block';
+}
+
+function signOut(){
+  if(googleAccessToken){
+    google.accounts.oauth2.revoke(googleAccessToken,()=>{
+      googleAccessToken=null;
+      localStorage.removeItem('tl_auth_hint');
+      setAuthState(false);
+      updateTopbarAuthDot(false);
+    });
+  }
+}
+
+function setAuthState(connected){
+  const dot=document.getElementById('auth-dot');
+  const text=document.getElementById('auth-status-text');
+  const signoutBtn=document.getElementById('signout-btn');
+  const signinBtn=document.getElementById('google-signin-btn');
+  if(!dot) return;
+  if(connected){
+    dot.className='auth-status-dot connected';
+    text.textContent='Connected — RIR & RPE will sync to sheet';
+    signoutBtn.style.display='block';
+    signinBtn.style.display='none';
+  } else {
+    dot.className='auth-status-dot';
+    text.textContent='Not signed in — data saves locally only';
+    signoutBtn.style.display='none';
+    signinBtn.style.display='flex';
+  }
+}
+
+function updateTopbarAuthDot(connected){
+  const dot=document.getElementById('topbar-auth-dot');
+  if(!dot) return;
+  dot.style.display='block';
+  dot.style.background=connected?'var(--green)':'var(--text3)';
+  dot.title=connected?'Sheet sync active':'Sheet sync off — sign in via Settings';
+}
+
+async function writeToSheet(rowIndex, rir, rpe, notes){
+  if(!googleAccessToken) return false;
+  try{
+    const sheetRow=rowIndex+2;
+    const range=encodeURIComponent(`${sheetName}!M${sheetRow}:N${sheetRow}`);
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueInputOption=RAW`;
+    const body={values:[[rir!==undefined?String(rir):'', notes||'']]};
+    const res=await fetch(url,{
+      method:'PUT',
+      headers:{'Authorization':`Bearer ${googleAccessToken}`,'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(res.status===401){
+      googleAccessToken=null;
+      updateTopbarAuthDot(false);
+      return false;
+    }
+    return res.ok;
+  }catch(e){console.error('Write error:',e);return false;}
+}
+
 window.onload=function(){
-  const sid=localStorage.getItem('tl_sid'),key=localStorage.getItem('tl_key'),tab=localStorage.getItem('tl_tab')||'Sheet1';
-  const lr=localStorage.getItem('tl_rir'),ln=localStorage.getItem('tl_notes'),lh=localStorage.getItem('tl_history');
-  if(lr) rirLog=JSON.parse(lr);
-  if(ln) notesLog=JSON.parse(ln);
-  if(lh) history=JSON.parse(lh);
-  if(sid&&key){sheetId=sid;apiKey=key;sheetName=tab;loadApp();}
+  initSplash();
+  const sid=localStorage.getItem('tl_sid'),key=localStorage.getItem('tl_key');
+  const tab=localStorage.getItem('tl_tab')||'Sheet1';
+  const bio=localStorage.getItem('tl_bio')||'Bio';
+  ['tl_rir','tl_rpe','tl_notes','tl_sets','tl_history','tl_prs'].forEach(k=>{
+    const v=localStorage.getItem(k);
+    if(v) try{({tl_rir:rirLog,tl_rpe:rpeLog,tl_notes:notesLog,tl_sets:setsLog,tl_history:history,tl_prs:prs})[k]=JSON.parse(v);}catch(e){}
+  });
+  if(key){sheetId=sid||sheetId;apiKey=key;sheetName=tab;bioTab=bio;}
+  // PWA manifest
+  injectPWA();
+  // Init Google auth after GSI loads
+  if(typeof google!=='undefined'){initGoogleAuth();}
+  else{
+    const gsiCheck=setInterval(()=>{
+      if(typeof google!=='undefined'){clearInterval(gsiCheck);initGoogleAuth();}
+    },500);
+  }
+  // Show auth status if previously connected
+  const authHint=localStorage.getItem('tl_auth_hint');
+  if(authHint) updateTopbarAuthDot(false);
 };
 
-async function fetchSheet(){
-  const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}?key=${apiKey}`;
+function injectPWA(){
+  const manifest={name:'TRAIN',short_name:'TRAIN',display:'standalone',background_color:'#0a0a0a',theme_color:'#0a0a0a',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a0a0a"/><text y=".9em" font-size="80" font-family="sans-serif" fill="%23e8321a">T</text></svg>',sizes:'any',type:'image/svg+xml'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  document.getElementById('manifest-link').href=url;
+}
+
+// ── FETCH ──
+async function fetchTab(tab){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(tab)}?key=${apiKey}`;
   const r=await fetch(url);
   if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Could not fetch sheet');}
   return (await r.json()).values||[];
 }
 
-function parseRows(rows){
+// ── PARSE ──
+function parseWorkout(rows){
   days=[];let cur=null;
   rows.forEach((row,i)=>{
     if(i===0) return;
@@ -267,87 +886,259 @@ function parseRows(rows){
   });
 }
 
-async function loadApp(){
-  document.getElementById('setup').style.display='none';
-  document.getElementById('app').style.display='flex';
-  document.getElementById('sync-text').textContent='Syncing…';
+async function loadAll(){
+  setSyncState('syncing');
   try{
-    parseRows(await fetchSheet());
+    const rows=await fetchTab(sheetName);
+    parseWorkout(rows);
     if(!days.length){
-      document.getElementById('workout-cards').innerHTML='<div class="error-box">No workout days found. Make sure column A has rows like "Day 1", "Day 2".</div>';
-      document.getElementById('sync-text').textContent='Error';return;
+      document.getElementById('workout-cards').innerHTML='<div class="error-box">No workout days found. Check column A has "Day 1", "Day 2" etc.</div>';
+      setSyncState('error');return;
     }
-    document.getElementById('sync-text').textContent='Synced to Google Sheet';
+    setSyncState('ok');
     renderDayScroll();renderWorkout();renderProgram();renderHistory();
     document.getElementById('prog-wrap').style.display='block';updateProgress();
+    try{const br=await fetchTab(bioTab);renderBio(br);}
+    catch(e){document.getElementById('bio-content').innerHTML='<div class="empty-state">Could not load bio data.<br>Check the bio tab name in Settings.</div>';}
   }catch(e){
-    document.getElementById('sync-text').textContent='Sync failed';
+    setSyncState('error');
     document.getElementById('workout-cards').innerHTML=`<div class="error-box"><strong>Could not load:</strong> ${e.message}<br><br>Check your Sheet ID and API Key. Make sure the sheet is shared as Viewer.</div>`;
   }
 }
 
+function setSyncState(s){
+  const dot=document.getElementById('sync-dot');
+  const txt=document.getElementById('sync-text');
+  if(s==='syncing'){dot.className='sync-dot syncing';txt.textContent='Syncing';}
+  else if(s==='ok'){dot.className='sync-dot';txt.textContent='Synced';}
+  else{dot.className='sync-dot error';txt.textContent='Error';}
+}
+
+// ── NAVIGATION ──
+function goHome(){
+  stopSessionClock();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-home').classList.add('active');
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('bnav-home').classList.add('active');
+}
+
+function goView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById(`bnav-${name}`);
+  if(nb) nb.classList.add('active');
+  if(name==='workouts') startSessionClock();
+  if(!apiKey){goSettings();return;}
+  if(days.length===0) loadAll();
+}
+
+// ── SESSION CLOCK ──
+function startSessionClock(){
+  if(sessionStart) return;
+  sessionStart=Date.now();
+  const el=document.getElementById('session-clock');
+  el.classList.add('running');
+  sessionTimer=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-sessionStart)/1000);
+    const m=Math.floor(elapsed/60),s=elapsed%60;
+    el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  },1000);
+}
+
+function stopSessionClock(){
+  if(sessionTimer){clearInterval(sessionTimer);sessionTimer=null;}
+  sessionStart=null;
+  const el=document.getElementById('session-clock');
+  el.textContent='';el.classList.remove('running');
+}
+
+function getSessionDuration(){
+  if(!sessionStart) return 0;
+  return Math.floor((Date.now()-sessionStart)/60000);
+}
+
+// ── REST TIMER ──
+function startRestTimer(seconds,exName){
+  if(restTimer) clearInterval(restTimer);
+  restTotal=seconds;restRemaining=seconds;restExName=exName;
+  const bar=document.getElementById('rest-timer-bar');
+  bar.classList.add('active');
+  document.getElementById('rest-timer-exname').textContent=exName;
+  updateRestDisplay();
+  restTimer=setInterval(()=>{
+    restRemaining--;
+    updateRestDisplay();
+    if(restRemaining<=0){
+      clearInterval(restTimer);restTimer=null;
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+      bar.classList.remove('active');
+    }
+  },1000);
+}
+
+function updateRestDisplay(){
+  const m=Math.floor(restRemaining/60),s=restRemaining%60;
+  document.getElementById('rest-timer-val').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  const pct=(restRemaining/restTotal)*100;
+  document.getElementById('rest-timer-fill').style.width=pct+'%';
+}
+
+function skipRest(){
+  if(restTimer){clearInterval(restTimer);restTimer=null;}
+  document.getElementById('rest-timer-bar').classList.remove('active');
+}
+
+function parseRestSeconds(restStr){
+  if(!restStr) return 0;
+  const lower=restStr.toLowerCase();
+  if(lower.includes('superset')) return 0;
+  const mins=lower.match(/(\d+)\s*-?\s*\d*\s*min/);
+  if(mins) return parseInt(mins[1])*60;
+  const secs=lower.match(/(\d+)\s*sec/);
+  if(secs) return parseInt(secs[1]);
+  const justNum=restStr.match(/^(\d+)$/);
+  if(justNum) return parseInt(justNum[1]);
+  return 90;
+}
+
+// ── DAY SCROLL ──
 function renderDayScroll(){
   document.getElementById('day-scroll').innerHTML=days.map((d,i)=>
-    `<div class="day-chip ${i===activeDay?'active':''}" onclick="selectDay(${i})">${d.label}${d.focus?' — '+d.focus:''}</div>`).join('');
-  const d=days[activeDay];
-  document.getElementById('workout-heading').textContent=d?`Today's Workout: ${d.label}${d.focus?' — '+d.focus:''}`:"Today's Workout";
+    `<div class="day-pill ${i===activeDay?'active':''}" onclick="selectDay(${i})">${d.label}${d.focus?' — '+d.focus:''}</div>`).join('');
 }
-function selectDay(i){activeDay=i;selectedRIR={};renderDayScroll();renderWorkout();updateProgress();}
 
+function selectDay(i){
+  activeDay=i;selectedRIR={};
+  renderDayScroll();renderWorkout();updateProgress();
+}
+
+// ── WORKOUT CARDS ──
 function renderWorkout(){
   const day=days[activeDay];
   if(!day){document.getElementById('workout-cards').innerHTML='<div class="empty-state">No exercises found.</div>';return;}
   document.getElementById('workout-cards').innerHTML=day.exercises.map((ex,j)=>buildCard(ex,activeDay,j)).join('');
+  document.querySelectorAll('.ex-card').forEach((card,i)=>{
+    card.style.animationDelay=(i*0.05)+'s';
+    card.classList.add('animate-in');
+  });
 }
 
 function buildCard(ex,di,ei){
-  const key=`${di}_${ei}`;
+  const key=`${di}_${ex.name}`;
   const logged=rirLog[key];
   const isLogged=logged!==undefined;
   const noRIR=ex.isWarmup||ex.sets==='1';
-  const metaParts=[ex.sets?ex.sets+' Sets':'',ex.reps?ex.reps+' Reps':'',ex.weight?'@ '+ex.weight:''].filter(Boolean);
-  const meta=metaParts.join(' x ');
+  const setsCount=parseInt(ex.sets)||0;
+  const completedSets=setsLog[key]||[];
+  const isPR=prs[ex.name]&&isLogged&&rirLog[key]<=(prs[ex.name].rir||99);
+
+  const parts=[ex.sets?ex.sets+' sets':'',ex.reps?ex.reps+' reps':'',ex.weight?'@ '+ex.weight:''].filter(Boolean);
   let tag='';
   if(ex.isWarmup) tag='<span class="tag tag-warm">Warm-up</span>';
   else if(ex.isAlt) tag='<span class="tag tag-alt">Alternative</span>';
   else if(ex.isSuperset) tag='<span class="tag tag-ss">Superset</span>';
+  const link=ex.link?extractLink(ex.link):'';
+  const videoHtml=link?`<a class="ex-video-link" href="${link}" target="_blank">Watch exercise</a>`:'';
 
-  let badge='';
+  let badges='';
   if(!noRIR){
-    if(isLogged) badge=`<span class="badge-logged">RIR: ${logged} ✓</span>`;
-    else if(ex.sheetRIR) badge=`<span class="badge-rir-done">RIR: ${ex.sheetRIR}</span>`;
-    else badge=`<button class="btn-enter-rir" onclick="openPanel(event,${di},${ei})">Enter RIR</button>`;
+    if(isLogged){
+      badges+=`<span class="badge badge-done">RIR: ${logged} ✓</span>`;
+      if(rpeLog[key]!==undefined) badges+=`<span class="badge badge-rpe">RPE ${rpeLog[key]}</span>`;
+      if(isPR) badges+=`<span class="badge badge-pr">PR 🏆</span>`;
+    } else if(ex.sheetRIR){
+      badges+=`<span class="badge badge-done">RIR: ${ex.sheetRIR}</span>`;
+    } else {
+      badges+=`<button class="badge badge-need" onclick="openPanel(event,${di},${ei})">Enter RIR</button>`;
+    }
+  } else {
+    const rpeLogged=rpeLog[key]!==undefined;
+    badges+=rpeLogged?`<span class="badge badge-rpe">RPE ${rpeLog[key]}</span>`:`<button class="badge badge-need" style="background:var(--amber-dim);border-color:rgba(245,158,11,0.3);color:var(--amber);" onclick="openPanel(event,${di},${ei})">Log RPE</button>`;
   }
 
-  const rir7=[0,1,2,3,4,5,6];
+  // Set tracker
+  let setsHtml='';
+  if(setsCount>0&&!isLogged&&!ex.sheetRIR){
+    setsHtml=`<div class="set-tracker"><span class="set-tracker-label">Sets</span>${
+      Array.from({length:setsCount},(_,s)=>{
+        const done=completedSets.includes(s);
+        const isFinal=s===setsCount-1;
+        return `<div class="set-dot ${done?'done':''} ${isFinal&&!done?'final':''}" onclick="toggleSet(${di},${ei},${s})">${s+1}</div>`;
+      }).join('')
+    }</div>`;
+  }
+
+  // Panel
   let panel='';
   if(!noRIR&&!isLogged&&!ex.sheetRIR){
+    const rir7=[0,1,2,3,4,5,6];
+    const curRPE=rpeLog[key]||7;
     panel=`<div class="rir-panel" id="panel-${di}-${ei}">
-      <div class="rir-panel-title">Final Set RIR</div>
-      <div class="rir-section-label">Reps in Reserve</div>
-      <div class="rir-btns">${rir7.map(n=>`<button class="rir-btn${selectedRIR[key]===n?' selected':''}" onclick="selectRIR(${di},${ei},${n})">${n}</button>`).join('')}</div>
-      <div class="notes-label">Notes (Optional)</div>
-      <textarea class="notes-input" rows="2" id="notes-${di}-${ei}" placeholder="e.g. Felt strong on last set.">${notesLog[key]||''}</textarea>
-      <button class="btn-save" id="save-${di}-${ei}" onclick="saveRIR(${di},${ei},${ex.rowIndex})" ${selectedRIR[key]===undefined?'disabled':''}>SAVE</button>
-    </div>`;
-  } else if(isLogged){
-    panel=`<div class="rir-panel open" id="panel-${di}-${ei}">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:13px;color:var(--green);font-weight:600;">Logged ✓</span>
-        <button onclick="undoRIR(${di},${ei})" style="font-size:13px;color:var(--blue);background:none;border:none;cursor:pointer;">Undo</button>
+      <div class="rir-panel-title">Final Set</div>
+      <div class="rir-section-lbl">Reps in Reserve</div>
+      <div class="rir-btns">${rir7.map(n=>`<button class="rir-btn${selectedRIR[key]===n?' selected':''}" onclick="selectRIR(${di},${ei},${n},event)">${n}</button>`).join('')}</div>
+      <div class="rpe-wrap">
+        <div class="rpe-header"><div class="rpe-lbl">RPE — Rate of Perceived Exertion</div><div class="rpe-val" id="rpe-val-${di}-${ei}">${curRPE}<span>/10</span></div></div>
+        <input type="range" class="rpe-slider" min="1" max="10" step="1" value="${curRPE}" id="rpe-${di}-${ei}" oninput="updateRPE(${di},${ei},this.value)">
+        <div class="rpe-desc" id="rpe-desc-${di}-${ei}">${getRPEDesc(curRPE)}</div>
+        <div class="rpe-scale"><span>1 Easy</span><span>5 Moderate</span><span>10 Max</span></div>
       </div>
-      ${notesLog[key]?`<div class="hist-note" style="margin-top:8px;">"${notesLog[key]}"</div>`:''}
+      <div class="notes-lbl">Notes (optional)</div>
+      <textarea class="notes-input" rows="2" id="notes-${di}-${ei}" placeholder="e.g. Felt strong, could've done more.">${notesLog[key]||''}</textarea>
+      <div class="panel-actions">
+        <button class="btn-save" id="save-${di}-${ei}" onclick="saveRIR(${di},${ei},'${ex.rest}','${ex.name.replace(/'/g,"\\'")}')" ${selectedRIR[key]===undefined?'disabled':''}>SAVE</button>
+        <button class="btn-flag" onclick="flagExercise('${ex.name.replace(/'/g,"\\'")}')" title="Flag for trainer">FLAG</button>
+      </div>
     </div>`;
+  } else if(!noRIR&&isLogged){
+    panel=`<div class="logged-panel">
+      <span style="font-size:12px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Logged ✓</span>
+      <button class="undo-btn" onclick="undoRIR(${di},${ei})">UNDO</button>
+    </div>`;
+  } else if(noRIR){
+    const rpeOnlyLogged=rpeLog[key]!==undefined;
+    if(!rpeOnlyLogged){
+      const curRPE=7;
+      panel=`<div class="rir-panel" id="panel-${di}-${ei}">
+        <div class="rir-panel-title">Log RPE</div>
+        <div class="rpe-wrap">
+          <div class="rpe-header"><div class="rpe-lbl">Rate of Perceived Exertion</div><div class="rpe-val" id="rpe-val-${di}-${ei}">${curRPE}<span>/10</span></div></div>
+          <input type="range" class="rpe-slider" min="1" max="10" step="1" value="${curRPE}" id="rpe-${di}-${ei}" oninput="updateRPE(${di},${ei},this.value)">
+          <div class="rpe-desc" id="rpe-desc-${di}-${ei}">${getRPEDesc(curRPE)}</div>
+          <div class="rpe-scale"><span>1 Easy</span><span>5 Moderate</span><span>10 Max</span></div>
+        </div>
+        <div class="notes-lbl">Notes (optional)</div>
+        <textarea class="notes-input" rows="2" id="notes-${di}-${ei}" placeholder="How did this feel?"></textarea>
+        <div class="panel-actions"><button class="btn-save" onclick="saveRPEOnly(${di},${ei},'${ex.name.replace(/'/g,"\\'")}')">SAVE RPE</button></div>
+      </div>`;
+    } else {
+      panel=`<div class="logged-panel">
+        <span style="font-size:12px;color:var(--amber);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">RPE ${rpeLog[key]}/10 Logged</span>
+        <button class="undo-btn" onclick="undoRIR(${di},${ei})">UNDO</button>
+      </div>`;
+    }
   }
 
-  return `<div class="ex-card" id="card-${di}-${ei}">
+  return `<div class="ex-card ${isLogged||ex.sheetRIR?'done':''} ${isPR?'pr-card':''}" id="card-${di}-${ei}">
     <div class="ex-card-head">
-      <div style="flex:1">
-        <div class="ex-title">${ex.name}</div>
-        <div class="ex-subtitle">${meta}</div>
-        ${tag}
+      <div class="ex-card-top">
+        <div style="flex:1">
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-focus">${ex.focus}</div>
+          ${tag}
+          ${videoHtml}
+        </div>
+        <div class="ex-badges">${badges}</div>
       </div>
-      <div class="ex-badge">${badge}</div>
+      <div class="ex-meta">
+        ${ex.sets?`<div class="ex-meta-item"><div class="ex-meta-lbl">Sets</div><div class="ex-meta-val">${ex.sets}</div></div>`:''}
+        ${ex.reps?`<div class="ex-meta-item"><div class="ex-meta-lbl">Reps</div><div class="ex-meta-val">${ex.reps}</div></div>`:''}
+        ${ex.weight?`<div class="ex-meta-item"><div class="ex-meta-lbl">Weight</div><div class="ex-meta-val">${ex.weight}</div></div>`:''}
+        ${ex.rest&&!ex.isSuperset?`<div class="ex-meta-item"><div class="ex-meta-lbl">Rest</div><div class="ex-meta-val">${ex.rest}</div></div>`:''}
+      </div>
+      ${setsHtml}
     </div>
     ${panel}
   </div>`;
@@ -359,123 +1150,294 @@ function openPanel(e,di,ei){
   if(p) p.classList.toggle('open');
 }
 
-function selectRIR(di,ei,val){
-  const key=`${di}_${ei}`;
-  selectedRIR[key]=val;
-  document.querySelectorAll(`[id^="rbtn-${di}-${ei}-"]`).forEach(b=>b.classList.remove('selected'));
-  // re-render to update state cleanly
+function toggleSet(di,ei,setIdx){
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
+  const sets=setsLog[key]||[];
+  const idx=sets.indexOf(setIdx);
+  if(idx>=0) sets.splice(idx,1);
+  else sets.push(setIdx);
+  setsLog[key]=sets;
+  localStorage.setItem('tl_sets',JSON.stringify(setsLog));
+  if(navigator.vibrate) navigator.vibrate(30);
   renderWorkout();
-  // re-open panel
+  const p=document.getElementById(`panel-${di}-${ei}`);
+  if(p&&p.classList.contains('open')) p.classList.add('open');
+}
+
+function selectRIR(di,ei,val,e){
+  if(e) e.stopPropagation();
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
+  selectedRIR[key]=val;
+  if(navigator.vibrate) navigator.vibrate(30);
+  renderWorkout();
   const p=document.getElementById(`panel-${di}-${ei}`);
   if(p) p.classList.add('open');
 }
 
-async function saveRIR(di,ei,rowIndex){
-  const key=`${di}_${ei}`;
+function getRPEDesc(val){
+  const v=parseInt(val);
+  const d={1:'Very light — barely any effort',2:'Light — easy, could go all day',3:'Moderate — comfortable pace',4:'Somewhat hard — starting to feel it',5:'Hard — noticeable effort',6:'Hard — breathing heavy',7:'Very hard — difficult to maintain',8:'Very hard — near your limit',9:'Extremely hard — max sustainable effort',10:'Maximum effort — everything you have'};
+  return d[v]||'';
+}
+
+function updateRPE(di,ei,val){
+  document.getElementById(`rpe-val-${di}-${ei}`).innerHTML=val+'<span>/10</span>';
+  document.getElementById(`rpe-desc-${di}-${ei}`).textContent=getRPEDesc(val);
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
+  rpeLog[key]=parseInt(val);
+}
+
+async function saveRIR(di,ei,restStr,exName){
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
   const val=selectedRIR[key];
   if(val===undefined) return;
+  const rpeVal=parseInt(document.getElementById(`rpe-${di}-${ei}`)?.value||rpeLog[key]||7);
   const notes=document.getElementById(`notes-${di}-${ei}`)?.value||'';
-  rirLog[key]=val;notesLog[key]=notes;
+  rirLog[key]=val;rpeLog[key]=rpeVal;notesLog[key]=notes;
   localStorage.setItem('tl_rir',JSON.stringify(rirLog));
+  localStorage.setItem('tl_rpe',JSON.stringify(rpeLog));
   localStorage.setItem('tl_notes',JSON.stringify(notesLog));
-  saveToHistory(di,ei,val,notes);
-  document.getElementById('sync-text').textContent='Saving…';
-  await writeRIR(rowIndex,val,notes);
-  document.getElementById('sync-text').textContent='Synced to Google Sheet';
+  checkPR(ex.name,val,ex.weight);
+  saveToHistory(di,ei,val,notes,rpeVal);
+  if(navigator.vibrate) navigator.vibrate([50,30,100]);
+  // Write to sheet if authenticated
+  if(googleAccessToken){
+    setSyncState('syncing');
+    const ex2=days[di]?.exercises[ei];
+    writeToSheet(ex2?.rowIndex||0, val, rpeVal, notes).then(ok=>{
+      setSyncState(ok?'ok':'error');
+      if(!ok) console.log('Write failed - data saved locally');
+    });
+  }
+  const restSecs=parseRestSeconds(restStr);
+  if(restSecs>0) startRestTimer(restSecs,exName);
+  renderWorkout();updateProgress();renderHistory();
+  checkSessionComplete(di);
+}
+
+async function saveRPEOnly(di,ei,exName){
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
+  const rpeVal=parseInt(document.getElementById(`rpe-${di}-${ei}`)?.value||7);
+  const notes=document.getElementById(`notes-${di}-${ei}`)?.value||'';
+  rpeLog[key]=rpeVal;notesLog[key]=notes;
+  localStorage.setItem('tl_rpe',JSON.stringify(rpeLog));
+  localStorage.setItem('tl_notes',JSON.stringify(notesLog));
+  saveToHistory(di,ei,undefined,notes,rpeVal);
+  if(navigator.vibrate) navigator.vibrate([50,30,100]);
+  if(googleAccessToken){
+    const ex2=days[di]?.exercises[ei];
+    writeToSheet(ex2?.rowIndex||0, undefined, rpeVal, notes);
+  }
   renderWorkout();updateProgress();renderHistory();
 }
 
 function undoRIR(di,ei){
-  const key=`${di}_${ei}`;
-  delete rirLog[key];delete notesLog[key];delete selectedRIR[key];
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
+  const key=`${di}_${ex.name}`;
+  delete rirLog[key];delete rpeLog[key];delete notesLog[key];delete selectedRIR[key];
   localStorage.setItem('tl_rir',JSON.stringify(rirLog));
+  localStorage.setItem('tl_rpe',JSON.stringify(rpeLog));
   localStorage.setItem('tl_notes',JSON.stringify(notesLog));
   renderWorkout();updateProgress();
 }
 
-async function writeRIR(rowIndex,val,notes){
-  try{
-    const token=localStorage.getItem('tl_oauth');if(!token) return;
-    const sr=rowIndex+2,range=encodeURIComponent(`${sheetName}!M${sr}:N${sr}`);
-    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueInputOption=RAW`,
-      {method:'PUT',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
-       body:JSON.stringify({values:[[String(val),notes]]})});
-  }catch(e){}
+function flagExercise(name){
+  alert(`"${name}" has been flagged for your trainer. Note this in your session or message them directly.`);
 }
 
-function saveToHistory(di,ei,rir,notes){
-  const day=days[di],ex=day?.exercises[ei];if(!ex) return;
+function checkPR(exName,rir,weight){
+  const existing=prs[exName];
+  const weightNum=parseFloat((weight||'0').replace(/[^0-9.]/g,''))||0;
+  if(!existing||rir<existing.rir||(rir===existing.rir&&weightNum>existing.weight)){
+    prs[exName]={rir,weight:weightNum,date:new Date().toLocaleDateString()};
+    localStorage.setItem('tl_prs',JSON.stringify(prs));
+  }
+}
+
+function saveToHistory(di,ei,rir,notes,rpe){
+  const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
   const ds=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   let entry=history.find(h=>h.date===ds&&h.dayLabel===day.label);
   if(!entry){entry={date:ds,dayLabel:day.label,entries:[]};history.unshift(entry);}
   const ex2=entry.entries.find(e=>e.name===ex.name);
-  if(ex2){ex2.rir=rir;ex2.notes=notes;}else entry.entries.push({name:ex.name,rir,notes});
-  if(history.length>40) history=history.slice(0,40);
+  const isPR=prs[ex.name]&&rir!==undefined&&rir<=(prs[ex.name].rir||99);
+  if(ex2){ex2.rir=rir;ex2.notes=notes;ex2.rpe=rpe;ex2.pr=isPR;}
+  else entry.entries.push({name:ex.name,rir,notes,rpe,pr:isPR});
+  if(history.length>60) history=history.slice(0,60);
   localStorage.setItem('tl_history',JSON.stringify(history));
 }
 
+function checkSessionComplete(di){
+  const day=days[di];if(!day) return;
+  const loggable=day.exercises.filter(ex=>!ex.isWarmup&&ex.sets!=='1');
+  const allDone=loggable.every(ex=>{
+    const key=`${di}_${ex.name}`;
+    return rirLog[key]!==undefined||ex.sheetRIR;
+  });
+  if(allDone&&loggable.length>0) showSessionComplete(di);
+}
+
+function showSessionComplete(di){
+  const day=days[di];if(!day) return;
+  const duration=getSessionDuration();
+  const entries=day.exercises.filter(ex=>!ex.isWarmup).map(ex=>{
+    const key=`${di}_${ex.name}`;
+    return {name:ex.name,rir:rirLog[key],rpe:rpeLog[key],pr:prs[ex.name]&&rirLog[key]!==undefined};
+  }).filter(e=>e.rir!==undefined||e.rpe!==undefined);
+
+  const totalLogged=entries.filter(e=>e.rir!==undefined).length;
+  const avgRIR=totalLogged>0?(entries.filter(e=>e.rir!==undefined).reduce((a,b)=>a+b.rir,0)/totalLogged).toFixed(1):'—';
+  const avgRPE=entries.filter(e=>e.rpe!==undefined).length>0?(entries.filter(e=>e.rpe!==undefined).reduce((a,b)=>a+b.rpe,0)/entries.filter(e=>e.rpe!==undefined).length).toFixed(1):'—';
+  const prCount=entries.filter(e=>e.pr).length;
+
+  document.getElementById('sc-subtitle').textContent=`${day.label} Complete`;
+  document.getElementById('sc-stats').innerHTML=`
+    <div class="sc-stat"><div class="sc-stat-val">${duration}m</div><div class="sc-stat-lbl">Duration</div></div>
+    <div class="sc-stat"><div class="sc-stat-val">${avgRIR}</div><div class="sc-stat-lbl">Avg RIR</div></div>
+    <div class="sc-stat"><div class="sc-stat-val">${avgRPE}</div><div class="sc-stat-lbl">Avg RPE</div></div>`;
+  document.getElementById('sc-entries').innerHTML=entries.map(e=>`
+    <div class="sc-entry-row">
+      <div class="sc-entry-name">${e.name}${e.pr?' <span class="sc-pr-badge">PR</span>':''}</div>
+      <div class="sc-entry-vals">
+        ${e.rir!==undefined?`<span class="sc-rir">RIR ${e.rir}</span>`:''}
+        ${e.rpe!==undefined?`<span class="sc-rpe">RPE ${e.rpe}</span>`:''}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('session-complete').style.display='flex';
+  if(navigator.vibrate) navigator.vibrate([100,50,100,50,200]);
+}
+
+function closeSessionComplete(){
+  document.getElementById('session-complete').style.display='none';
+}
+
+// ── PROGRESS ──
 function updateProgress(){
   const day=days[activeDay];if(!day) return;
   const total=day.exercises.filter(ex=>!ex.isWarmup&&ex.sets!=='1').length;
   let done=0;
-  day.exercises.forEach((ex,ei)=>{if(!ex.isWarmup&&ex.sets!=='1'&&(rirLog[`${activeDay}_${ei}`]!==undefined||ex.sheetRIR)) done++;});
+  day.exercises.forEach(ex=>{
+    if(ex.isWarmup||ex.sets==='1') return;
+    const key=`${activeDay}_${ex.name}`;
+    if(rirLog[key]!==undefined||ex.sheetRIR) done++;
+  });
   const pct=total>0?Math.round(done/total*100):0;
   document.getElementById('prog-label').textContent=`${done} / ${total} logged`;
   document.getElementById('prog-pct').textContent=pct+'%';
   document.getElementById('prog-fill').style.width=pct+'%';
 }
 
+// ── PROGRAM ──
 function renderProgram(){
-  document.getElementById('program-content').innerHTML=days.map(day=>`
-    <div class="prog-card">
-      <div class="prog-day-head">
-        <div class="prog-day-title">${day.label}</div>
-        <div class="prog-day-focus">${day.focus}</div>
+  document.getElementById('program-content').innerHTML=`<div style="margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Program by</div>
+      <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);text-decoration:none;">Passion8te Lifestyle</a>
+    </div>
+    <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);text-decoration:none;font-weight:600;">Visit →</a>
+  </div>`+days.map(day=>`
+    <div class="prog-day-block">
+      <div class="prog-day-head"><div class="prog-day-title">${day.label}</div><div class="prog-day-focus">${day.focus}</div></div>
+      <div class="prog-table-card">
+        ${day.exercises.map(ex=>{
+          const link=ex.link?extractLink(ex.link):'';
+          return `<div class="prog-row">
+            <div><div class="prog-ex-name">${ex.name}</div>${link?`<a class="prog-yt" href="${link}" target="_blank">Watch exercise</a>`:''}</div>
+            <div><div class="prog-detail">${[ex.sets?ex.sets+'×':'',ex.reps,ex.weight].filter(Boolean).join(' ')}</div>${ex.sheetRIR?`<div class="prog-rir-val">RIR: ${ex.sheetRIR}</div>`:''}</div>
+          </div>`;
+        }).join('')}
       </div>
-      ${day.exercises.map(ex=>`
-        <div class="prog-row">
-          <div>
-            <div class="prog-name">${ex.name}</div>
-            ${ex.isSuperset?'<span class="tag tag-ss">Superset</span>':''}
-            ${ex.link?`<a class="yt-link" href="${extractLink(ex.link)}" target="_blank">▶ Watch</a>`:''}
-          </div>
-          <div style="text-align:right">
-            <div class="prog-detail">${[ex.sets?ex.sets+'×':'',ex.reps,ex.weight].filter(Boolean).join(' ')}</div>
-            ${ex.sheetRIR?`<div class="prog-rir">RIR: ${ex.sheetRIR}</div>`:''}
-          </div>
-        </div>`).join('')}
     </div>`).join('');
 }
 
-function extractLink(s){const m=s.match(/https?:\/\/[^\s]+/);return m?m[0]:'#';}
+// ── BIO DATA ──
+function renderBio(rows){
+  if(!rows||rows.length<2){document.getElementById('bio-content').innerHTML='<div class="empty-state">No bio data found.<br>Check your bio tab name in Settings.</div>';return;}
+  const headers=rows[0];
+  const dataRows=rows.slice(1).filter(r=>r.some(c=>c));
+  if(!dataRows.length){document.getElementById('bio-content').innerHTML='<div class="empty-state">Bio data tab is empty.</div>';return;}
+  document.getElementById('bio-content').innerHTML=`<div class="bio-table-wrap"><table class="bio-table">
+    <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${dataRows.map(r=>`<tr>${headers.map((_,i)=>`<td>${r[i]||'—'}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></div>`;
+}
 
+// ── HISTORY ──
 function renderHistory(){
   const total=history.length;
   const all=history.flatMap(h=>h.entries.map(e=>e.rir)).filter(r=>r!==undefined);
   const avg=all.length>0?(all.reduce((a,b)=>a+b,0)/all.length).toFixed(1):'—';
-  document.getElementById('history-content').innerHTML=`
-    <div class="hist-stats">
-      <div class="hist-stat"><div class="hist-stat-label">Sessions logged</div><div class="hist-stat-val">${total}</div><div class="hist-stat-sub">total</div></div>
-      <div class="hist-stat"><div class="hist-stat-label">Avg RIR</div><div class="hist-stat-val">${avg}</div><div class="hist-stat-sub">all exercises</div></div>
-    </div>
-    ${history.length===0?'<div class="empty-state">No history yet.<br>Log your first session to see it here.</div>':
+  const totalPRs=Object.keys(prs).length;
+
+  const statsHtml=`<div class="hist-stats">
+    <div class="hist-stat"><div class="hist-stat-lbl">Sessions</div><div class="hist-stat-val">${total}</div><div class="hist-stat-sub">logged</div></div>
+    <div class="hist-stat"><div class="hist-stat-lbl">Avg RIR</div><div class="hist-stat-val">${avg}</div><div class="hist-stat-sub">all exercises</div></div>
+    <div class="hist-stat"><div class="hist-stat-lbl">PRs Set</div><div class="hist-stat-val">${totalPRs}</div><div class="hist-stat-sub">personal records</div></div>
+    <div class="hist-stat"><div class="hist-stat-lbl">Last Session</div><div class="hist-stat-val" style="font-size:16px;">${history[0]?history[0].date:'—'}</div><div class="hist-stat-sub">&nbsp;</div></div>
+  </div>`;
+
+  // Build RIR trend chart for most logged exercise
+  let chartHtml='';
+  const exCounts={};
+  history.forEach(h=>h.entries.forEach(e=>{if(e.rir!==undefined) exCounts[e.name]=(exCounts[e.name]||0)+1;}));
+  const topEx=Object.entries(exCounts).sort((a,b)=>b[1]-a[1])[0];
+  if(topEx&&topEx[1]>=2){
+    const exName=topEx[0];
+    const dataPoints=history.filter(h=>h.entries.find(e=>e.name===exName&&e.rir!==undefined)).slice(0,8).reverse().map(h=>h.entries.find(e=>e.name===exName).rir);
+    if(dataPoints.length>=2){
+      const maxRIR=Math.max(...dataPoints,6);
+      const w=260,h=48,pad=4;
+      const pts=dataPoints.map((v,i)=>{
+        const x=pad+(i/(dataPoints.length-1))*(w-pad*2);
+        const y=h-pad-(v/maxRIR)*(h-pad*2);
+        return `${x},${y}`;
+      }).join(' ');
+      chartHtml=`<div class="chart-card">
+        <div class="chart-title">RIR Trend — ${exName}</div>
+        <svg class="chart-svg" viewBox="0 0 ${w} ${h+16}" height="${h+16}">
+          <polyline points="${pts}" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          ${dataPoints.map((v,i)=>{
+            const x=pad+(i/(dataPoints.length-1))*(w-pad*2);
+            const y=h-pad-(v/maxRIR)*(h-pad*2);
+            return `<circle cx="${x}" cy="${y}" r="3" fill="var(--red)"/>`;
+          }).join('')}
+          <text x="0" y="${h+14}" font-size="10" fill="var(--text3)" font-family="Inter,sans-serif">Oldest</text>
+          <text x="${w}" y="${h+14}" font-size="10" fill="var(--text3)" text-anchor="end" font-family="Inter,sans-serif">Latest</text>
+        </svg>
+      </div>`;
+    }
+  }
+
+  const entriesHtml=history.length===0?'<div class="empty-state">No history yet.<br>Log your first session to see it here.</div>':
     history.map(h=>`<div class="hist-entry">
       <div class="hist-entry-date">${h.date} · ${h.dayLabel}</div>
       ${h.entries.map(e=>`<div class="hist-row">
-        <div><div class="hist-row-name">${e.name}</div>${e.notes?`<div class="hist-note">"${e.notes}"</div>`:''}</div>
-        <div class="hist-row-rir">RIR: ${e.rir}</div>
+        <div><div class="hist-row-name">${e.name}${e.pr?' 🏆':''}</div>${e.notes?`<div class="hist-note">"${e.notes}"</div>`:''}</div>
+        <div class="hist-row-vals">
+          ${e.rir!==undefined?`<div class="hist-rir">RIR ${e.rir}</div>`:''}
+          ${e.rpe!==undefined?`<div class="hist-rpe">RPE ${e.rpe}/10</div>`:''}
+        </div>
       </div>`).join('')}
-    </div>`).join('')}`;
+    </div>`).join('');
+
+  document.getElementById('history-content').innerHTML=statsHtml+chartHtml+entriesHtml;
 }
 
+function extractLink(s){const m=s.match(/https?:\/\/[^\s]+/);return m?m[0]:'#';}
+
+// ── TAB NAV ──
 function switchTab(name){
-  ['workout','history','program'].forEach(t=>{
-    document.getElementById(`tab-${t}`).classList.toggle('active',t===name);
-    document.getElementById(`bnav-${t}`).classList.toggle('active',t===name);
-  });
-  document.getElementById('day-scroll').style.display=name==='workout'?'flex':'none';
-  document.getElementById('prog-wrap').style.display=name==='workout'?'block':'none';
-  document.getElementById('workout-heading').style.display=name==='workout'?'block':'none';
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById(`bnav-${name}`);
+  if(nb) nb.classList.add('active');
 }
 </script>
 </body>
