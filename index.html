@@ -810,10 +810,14 @@ async function writeToSheet(rowIndex, rir, rpe, notes){
   if(!googleAccessToken) return false;
   try{
     const sheetRow=rowIndex+1;
-    const range=encodeURIComponent(`${sheetName}!M${sheetRow}:N${sheetRow}`);
+    const range=encodeURIComponent(`${sheetName}!M${sheetRow}:O${sheetRow}`);
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueInputOption=RAW`;
-    const body={values:[[rir!==undefined?String(rir):'', notes||'']]};
-    console.log('PUT', url, JSON.stringify(body));
+    const body={values:[[
+      rir!==undefined?String(rir):'',
+      rpe!==undefined?String(rpe):'',
+      notes||''
+    ]]};
+    console.log('Writing row',sheetRow,'| RIR:',rir,'| RPE:',rpe,'| Notes:',notes);
     const res=await fetch(url,{
       method:'PUT',
       headers:{'Authorization':`Bearer ${googleAccessToken}`,'Content-Type':'application/json'},
