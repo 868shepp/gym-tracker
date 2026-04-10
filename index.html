@@ -809,15 +809,18 @@ function updateTopbarAuthDot(connected){
 async function writeToSheet(rowIndex, rir, rpe, notes){
   if(!googleAccessToken) return false;
   try{
-    const sheetRow=rowIndex+2;
+    const sheetRow=rowIndex+1;
     const range=encodeURIComponent(`${sheetName}!M${sheetRow}:N${sheetRow}`);
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueInputOption=RAW`;
     const body={values:[[rir!==undefined?String(rir):'', notes||'']]};
+    console.log('PUT', url, JSON.stringify(body));
     const res=await fetch(url,{
       method:'PUT',
       headers:{'Authorization':`Bearer ${googleAccessToken}`,'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
+    const resText=await res.text();
+    console.log('Sheet write response:', res.status, resText);
     if(res.status===401){
       googleAccessToken=null;
       updateTopbarAuthDot(false);
@@ -1207,10 +1210,10 @@ async function saveRIR(di,ei,restStr,exName){
   // Write to sheet if authenticated
   if(googleAccessToken){
     setSyncState('syncing');
-    const ex2=days[di]?.exercises[ei];
-    writeToSheet(ex2?.rowIndex||0, val, rpeVal, notes).then(ok=>{
+    console.log('Writing to sheet: row', ex.rowIndex, 'RIR:', val, 'RPE:', rpeVal);
+    writeToSheet(ex.rowIndex, val, rpeVal, notes).then(ok=>{
       setSyncState(ok?'ok':'error');
-      if(!ok) console.log('Write failed - data saved locally');
+      if(!ok) console.warn('Write failed - check console for details');
     });
   }
   const restSecs=parseRestSeconds(restStr);
@@ -1230,8 +1233,8 @@ async function saveRPEOnly(di,ei,exName){
   saveToHistory(di,ei,undefined,notes,rpeVal);
   if(navigator.vibrate) navigator.vibrate([50,30,100]);
   if(googleAccessToken){
-    const ex2=days[di]?.exercises[ei];
-    writeToSheet(ex2?.rowIndex||0, undefined, rpeVal, notes);
+    console.log('Writing RPE to sheet: row', ex.rowIndex, 'RPE:', rpeVal);
+    writeToSheet(ex.rowIndex, rpeVal!==undefined?undefined:undefined, rpeVal, notes);
   }
   renderWorkout();updateProgress();renderHistory();
 }
