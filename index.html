@@ -26,6 +26,32 @@
   --purple:#818cf8;
   --radius:12px;--radius-lg:18px;
 }
+body.light-mode{
+  --bg:#f4f4f2;--surface:#ffffff;--surface2:#ebebea;--surface3:#dedddc;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --red:#e8321a;--red-dim:rgba(232,50,26,0.10);--red-dim2:rgba(232,50,26,0.06);
+  --text:#111111;--text2:#555555;--text3:#999999;
+  --green:#1a9e58;--green-dim:rgba(26,158,88,0.10);
+  --amber:#b87000;--amber-dim:rgba(184,112,0,0.10);
+  --purple:#4f46e5;
+}
+/* Light mode specific overrides */
+body.light-mode .topbar{background:#ffffff;border-bottom:1px solid rgba(0,0,0,0.10);}
+body.light-mode .bottom-nav{background:#ffffff;border-top:1px solid rgba(0,0,0,0.10);}
+body.light-mode .splash-logo{color:#111;}
+body.light-mode .quote-card{background:#fff;border-color:rgba(0,0,0,0.10);}
+body.light-mode .quote-text{color:#111;}
+body.light-mode .set-dot{background:#e8e8e8;border-color:rgba(0,0,0,0.14);}
+body.light-mode .field input{background:#f0f0ee;border-color:rgba(0,0,0,0.14);color:#111;}
+body.light-mode .notes-input{background:#f0f0ee;border-color:rgba(0,0,0,0.14);color:#111;}
+body.light-mode .rpe-slider{background:#dedddc;}
+body.light-mode #session-complete .session-complete-card{background:#fff;border-color:rgba(0,0,0,0.10);}
+body.light-mode #settings-modal>div{background:#ffffff;}
+body.light-mode .rir-panel{background:#f4f4f2;}
+body.light-mode .logged-panel{background:#f4f4f2;}
+/* Theme toggle button */
+.theme-toggle{height:28px;width:28px;border-radius:14px;background:transparent;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s,color 0.15s;flex-shrink:0;}
+.theme-toggle:hover{border-color:var(--border);color:var(--text2);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;height:-webkit-fill-available;overflow:hidden;background:var(--bg);}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:15px;}
@@ -41,12 +67,75 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 @keyframes popIn{0%{transform:scale(0.85);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
 @keyframes celebrate{0%{transform:scale(1)}25%{transform:scale(1.08)}50%{transform:scale(0.96)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
 @keyframes timerPulse{0%,100%{color:var(--red)}50%{color:#ff6b4a}}
+@keyframes viewEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes viewEnterRight{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes cardReveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
 
 .animate-in{animation:fadeIn 0.3s ease forwards;}
 .animate-slide-up{animation:slideUp 0.35s ease forwards;}
 .animate-slide-right{animation:slideInRight 0.3s ease forwards;}
 .animate-slide-left{animation:slideInLeft 0.3s ease forwards;}
 .animate-pop{animation:popIn 0.25s ease forwards;}
+
+/* VIEW TRANSITIONS */
+.view{opacity:0;pointer-events:none;position:absolute;top:0;left:0;right:0;min-height:100%;transition:opacity 0.18s ease;}
+.view.active{opacity:1;pointer-events:all;position:relative;animation:viewEnter 0.22s cubic-bezier(0.25,0.46,0.45,0.94) forwards;}
+#view-home.active{animation:viewEnter 0.25s cubic-bezier(0.25,0.46,0.45,0.94) forwards;}
+
+/* SURFACE DEPTH — topbar + nav blur */
+.topbar{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(20,20,20,0.85)!important;}
+.bottom-nav{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(20,20,20,0.85)!important;}
+body.light-mode .topbar{background:rgba(255,255,255,0.88)!important;}
+body.light-mode .bottom-nav{background:rgba(255,255,255,0.88)!important;}
+
+/* RIPPLE */
+.ripple-host{position:relative;overflow:hidden;}
+.ripple-wave{position:absolute;border-radius:50%;background:rgba(255,255,255,0.15);width:40px;height:40px;margin-top:-20px;margin-left:-20px;animation:ripple 0.5s ease-out forwards;pointer-events:none;}
+body.light-mode .ripple-wave{background:rgba(0,0,0,0.08);}
+
+/* CARD HOVER LIFT */
+.home-card{transition:transform 0.15s ease,background 0.15s,box-shadow 0.15s;}
+.home-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.35);}
+.home-card:active{transform:scale(0.97) translateY(0);box-shadow:none;}
+body.light-mode .home-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.10);}
+
+/* EXERCISE CARD SCROLL REVEAL */
+.ex-card{opacity:0;transform:translateY(12px);transition:opacity 0.28s ease,transform 0.28s ease,border-color 0.3s;}
+.ex-card.revealed{opacity:1;transform:translateY(0);}
+
+/* BOTTOM NAV TRANSITIONS */
+.bnav-btn{transition:color 0.15s,border-color 0.15s,transform 0.1s;}
+.bnav-btn:active{transform:scale(0.92);}
+
+/* BUTTON PRESS FEEL */
+.btn-save,.btn-connect,.splash-btn{transition:opacity 0.1s,transform 0.1s,background 0.15s;}
+.btn-save:active,.btn-connect:active,.splash-btn:active{transform:scale(0.97);}
+
+/* RIR BUTTON SPRING */
+.rir-btn{transition:all 0.12s cubic-bezier(0.34,1.56,0.64,1);}
+.rir-btn.selected{transform:scale(1.08);}
+
+/* SET DOT SPRING */
+.set-dot{transition:background 0.15s,border-color 0.15s,transform 0.15s cubic-bezier(0.34,1.56,0.64,1);}
+.set-dot.done{transform:scale(1.1);}
+
+/* PROGRESS BAR SMOOTH */
+.prog-fill{transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1)!important;}
+
+/* PANEL OPEN SMOOTH */
+.rir-panel{animation:none;transition:opacity 0.18s ease,transform 0.18s ease;}
+.rir-panel.open{display:block;animation:slideUp 0.2s cubic-bezier(0.25,0.46,0.45,0.94) forwards;}
+
+/* DAY PILL TRANSITION */
+.day-pill{transition:background 0.15s,color 0.15s,border-color 0.15s,transform 0.1s;}
+.day-pill:active{transform:scale(0.95);}
+
+/* SYNC DOT PULSE SMOOTH */
+.sync-dot{transition:background 0.3s ease;}
+
+/* SKELETON REFINED */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:600px 100%;animation:shimmer 1.6s ease infinite;}
 
 /* SKELETON */
 .skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:400px 100%;animation:shimmer 1.4s infinite;}
@@ -65,26 +154,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .splash-btn{width:100%;max-width:380px;margin-top:1.75rem;padding:17px;background:var(--red);color:white;border:none;border-radius:var(--radius);font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;cursor:pointer;transition:opacity 0.15s,transform 0.1s;animation:slideUp 0.5s 0.35s ease both;}
 .splash-btn:active{opacity:0.85;transform:scale(0.98);}
 
-/* SETUP */
-#setup{position:fixed;inset:0;background:var(--bg);z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:2rem 1.25rem 3rem;}
-.setup-logo{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:4px;color:var(--text);margin-bottom:0.2rem;}
-.setup-logo span{color:var(--red);}
-.setup-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:2rem;}
-.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem;}
-.setup-card h2{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:1.25rem;font-weight:600;}
-.s-step{display:flex;gap:12px;margin-bottom:1.25rem;align-items:flex-start;}
-.s-num{width:22px;height:22px;border-radius:50%;background:var(--red);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
-.s-body p{font-size:13px;color:var(--text2);line-height:1.6;}
-.s-body a{color:var(--red);text-decoration:none;}
-.s-body strong{color:var(--text);font-weight:500;}
-.field{margin-top:8px;}
-.field input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;}
-.field input:focus{border-color:var(--red);}
-.field input::placeholder{color:var(--text3);}
-.btn-connect{width:100%;padding:16px;background:var(--red);color:white;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;border:none;border-radius:var(--radius);cursor:pointer;margin-top:1rem;transition:opacity 0.15s,transform 0.1s;}
-.btn-connect:active{opacity:0.85;transform:scale(0.98);}
-.error-msg{background:var(--red-dim2);border:1px solid rgba(232,50,26,0.25);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--red);margin-top:1rem;line-height:1.6;display:none;}
-
 /* APP */
 #app{display:none;flex-direction:column;height:100vh;height:-webkit-fill-available;max-width:480px;margin:0 auto;background:var(--bg);}
 
@@ -102,7 +171,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .topbar-btn:hover{border-color:var(--border);color:var(--text2);}
 
 /* CONTENT */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);position:relative;}
 
 /* HOME */
 #view-home{padding:16px;}
@@ -111,21 +180,48 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .home-greeting-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:2px;color:var(--text);line-height:1;}
 .home-greeting-name span{color:var(--red);}
 .home-date{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.06em;}
-.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.25rem 1.75rem;cursor:pointer;position:relative;overflow:hidden;transition:background 0.15s,transform 0.1s;}
-.home-card:active{background:var(--surface2);transform:scale(0.97);}
-.home-card-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--text);line-height:1;margin-bottom:6px;}
-.home-card-sub{font-size:10px;color:var(--text3);line-height:1.5;text-transform:uppercase;letter-spacing:0.07em;}
-.home-card-accent{position:absolute;bottom:0;left:0;right:0;height:3px;}
-.home-card.workouts .home-card-accent{background:var(--red);}
-.home-card.bio .home-card-accent{background:var(--red);}
-.home-card.history .home-card-accent{background:var(--red);}
-.home-card.program .home-card-accent{background:var(--red);}
-.home-card.recovery .home-card-accent{background:var(--red);}
+
+/* STACKED LIST */
+.home-stack{display:flex;flex-direction:column;gap:8px;}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0;cursor:pointer;position:relative;overflow:hidden;transition:background 0.15s,transform 0.15s,box-shadow 0.15s;}
+.home-card:active{transform:scale(0.98);}
+.home-card-inner{display:flex;align-items:center;gap:0;padding:14px 16px;}
+.home-card-left-bar{width:3px;height:100%;position:absolute;left:0;top:0;bottom:0;border-radius:3px 0 0 3px;}
+.home-card.workouts .home-card-left-bar{background:var(--red);}
+.home-card.bio .home-card-left-bar{background:var(--text3);}
+.home-card.history .home-card-left-bar{background:var(--text3);}
+.home-card.program .home-card-left-bar{background:var(--text3);}
+.home-card.recovery .home-card-left-bar{background:var(--surface3);}
+.home-card-body{flex:1;padding-left:12px;}
+.home-card-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;color:var(--text);line-height:1;margin-bottom:3px;}
+.home-card.recovery .home-card-title{color:var(--text3);}
+.home-card-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;line-height:1.4;}
+.home-card-meta{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.home-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:12px;}
+.home-card-arrow{font-size:16px;color:var(--text3);transition:color 0.15s,transform 0.15s;}
+.home-card:hover .home-card-arrow{color:var(--red);transform:translateX(2px);}
+.home-card-badge{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--red);letter-spacing:1px;}
+.home-card-badge.dim{color:var(--text3);}
+
+/* Active workout card */
+.home-card.workouts{border-color:rgba(232,50,26,0.25);}
+.home-card-progress{padding:0 16px 12px 31px;}
+.home-card-prog-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.07em;}
+.home-card-prog-labels span:last-child{color:var(--red);}
+.home-card-prog-track{height:2px;background:var(--surface3);border-radius:2px;}
+.home-card-prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+
+/* Quick stats strip */
+.home-stats-strip{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+.home-stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;}
+.home-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:3px;}
+.home-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);line-height:1;}
+.home-stat-sub{font-size:9px;color:var(--text3);margin-top:1px;}
 
 /* VIEWS */
 .view{display:none;min-height:100%;}
 .view.active{display:block;}
+/* override for react-feel transitions already in ANIMATIONS section */
 .view-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;}
 .back-btn{height:28px;padding:0 12px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.1em;flex-shrink:0;transition:background 0.15s;}
 .back-btn:active{background:var(--surface3);}
@@ -149,15 +245,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .prog-track{height:3px;background:var(--surface3);border-radius:3px;}
 .prog-fill{height:100%;background:var(--red);border-radius:3px;transition:width 0.5s ease;}
 
-/* REST TIMER */
-.rest-timer-bar{background:var(--surface2);border-top:2px solid var(--red);border-bottom:1px solid var(--border);padding:12px 16px;display:none;transition:all 0.3s;}
-.rest-timer-bar.active{display:flex;align-items:center;gap:10px;animation:slideUp 0.3s ease;}
-.rest-timer-label{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text2);}
-.rest-timer-label span{display:block;font-size:11px;color:var(--text2);margin-top:1px;}
-.rest-timer-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--red);animation:timerPulse 1s ease-in-out infinite;min-width:60px;text-align:right;}
-.rest-timer-track{flex:1;height:3px;background:var(--surface3);border-radius:3px;}
-.rest-timer-fill{height:100%;background:var(--red);border-radius:3px;transition:width 0.5s linear;}
-.rest-skip-btn{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:0.08em;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;}
+/* CALENDAR */
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-family:'Inter',sans-serif;color:var(--text3);background:var(--surface);border:1px solid var(--border);cursor:default;position:relative;}
+.cal-day.has-session{background:rgba(232,50,26,0.12);border-color:rgba(232,50,26,0.3);color:var(--text);}
+.cal-day.today{border-color:var(--red);color:var(--red);font-weight:700;}
+.cal-day.today.has-session{background:rgba(232,50,26,0.2);}
+.cal-day.empty{background:transparent;border-color:transparent;}
+.cal-day-num{font-size:13px;line-height:1;}
+.cal-day-dur{font-size:9px;color:var(--red);margin-top:2px;font-weight:600;letter-spacing:0.05em;}
+.cal-dow{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;color:var(--text3);text-align:center;padding-bottom:4px;}
+/* REST TIMER MODAL */
+.rest-modal{position:fixed;inset:0;z-index:800;background:#111418;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0;animation:fadeIn 0.25s ease;}
+.rest-modal.active{display:flex;}
+.rest-chips{display:flex;gap:10px;margin-bottom:44px;}
+.rest-chip{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 14px 7px 10px;font-size:13px;color:#e0e0e0;font-family:'Inter',sans-serif;}
+.rest-chip-dot{width:9px;height:9px;border-radius:50%;background:var(--red);flex-shrink:0;}
+.rest-ring-wrap{position:relative;width:220px;height:220px;margin-bottom:36px;}
+.rest-ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+.rest-ring-bg{fill:none;stroke:#1e2228;stroke-width:14;}
+.rest-ring-fg{fill:none;stroke:var(--red);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.rest-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rest-time-val{font-family:'Bebas Neue',sans-serif;font-size:58px;letter-spacing:3px;color:#ffffff;line-height:1;}
+.rest-time-label{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);margin-top:4px;}
+.rest-ex-name{font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-bottom:28px;text-align:center;max-width:260px;}
+.rest-skip-btn{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:10px 28px;cursor:pointer;}
+.rest-skip-btn:active{background:rgba(255,255,255,0.12);}
 
 /* EXERCISE CARDS */
 .ex-list{padding:12px 16px 80px;min-height:60vh;}
@@ -324,7 +436,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 <div id="splash">
   <div class="splash-logo">TRA<span>I</span>N</div>
   <div class="splash-date" id="splash-date"></div>
-  <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;">Program by <a href="https://www.passion8telifestyle.com/" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">Passion8te Lifestyle</a></div>
+  <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;">Program by <a href="https://shepplabs.com/" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">SheppLabs</a></div>
   <div class="quote-card">
     <span class="quote-mark">"</span>
     <div class="quote-text" id="quote-text"></div>
@@ -333,50 +445,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   <button class="splash-btn" onclick="enterApp()">LET'S GO</button>
 </div>
 
-<!-- SETUP -->
-<div id="setup">
-  <div class="setup-logo">TRA<span>I</span>N</div>
-  <div class="setup-sub">Connect your Google Sheet</div>
-  <div class="setup-card">
-    <h2>Setup</h2>
-    <div class="s-step">
-      <div class="s-num">1</div>
-      <div class="s-body"><p><strong>Get a Google API Key</strong> — <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → New Project → Enable Google Sheets API → Credentials → Create API Key</p></div>
-    </div>
-    <div class="s-step">
-      <div class="s-num">2</div>
-      <div class="s-body"><p><strong>Share your sheet</strong> — Share → Anyone with the link → Viewer</p></div>
-    </div>
-    <div class="s-step">
-      <div class="s-num">3</div>
-      <div class="s-body">
-        <p><strong>Enter your details</strong></p>
-        <div class="field"><input id="inp-sid" type="text" placeholder="Sheet ID" value="1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM"/></div>
-        <div class="field"><input id="inp-key" type="text" placeholder="Google API Key"/></div>
-        <div class="field"><input id="inp-tab" type="text" placeholder="Workout tab name (e.g. Sheet1)" value="Sheet1"/></div>
-        <div class="field"><input id="inp-bio" type="text" placeholder="Bio data tab name (e.g. Bio)" value="Bio"/></div>
-      </div>
-    </div>
-    <button class="btn-connect" onclick="connect()">CONNECT</button>
-    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:12px;">Write-back to Sheet</div>
-      <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;">Sign in with Google to allow the app to write your RIR and RPE data back to your sheet so your trainer can see it.</p>
-      <div id="auth-status-block" style="display:none;">
-        <div class="auth-status">
-          <div style="display:flex;align-items:center;gap:8px;"><div class="auth-status-dot" id="auth-dot"></div><span class="auth-status-text" id="auth-status-text">Not signed in</span></div>
-          <button class="signout-btn" id="signout-btn" onclick="signOut()" style="display:none;">SIGN OUT</button>
-        </div>
-      </div>
-      <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-        Sign in with Google
-      </button>
-    </div>
-    <div class="error-msg" id="setup-error"></div>
-  </div>
-</div>
-
-<!-- APP -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-main">
@@ -384,6 +452,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div class="topbar-right">
         <div class="sync-badge"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Synced</span></div>
         <div id="topbar-auth-dot" style="width:6px;height:6px;border-radius:50%;background:var(--text3);display:none;" title="Sheet write-back status"></div>
+        <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">&#9788;</button>
         <button class="topbar-btn" onclick="goSettings()">SET</button>
       </div>
     </div>
@@ -397,46 +466,123 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
     <!-- HOME -->
     <div id="view-home" class="view active">
-      <div style="padding:16px;">
+      <div id="view-home" style="padding:16px;">
         <div class="home-greeting">
           <div class="home-greeting-eyebrow">Welcome back</div>
-          <div class="home-greeting-name">LET'S <span>WORK</span></div>
+          <div class="home-greeting-name" id="home-greeting-name">LET'S <span>WORK</span></div>
           <div class="home-date" id="home-date"></div>
         </div>
-        <div class="home-grid">
-          <div class="home-card workouts" onclick="goView('workouts')">
-            <div class="home-card-title">Workouts</div>
-            <div class="home-card-sub">Log session & RIR</div>
-            <div class="home-card-accent"></div>
+
+        <!-- QUICK STATS STRIP -->
+        <div class="home-stats-strip" id="home-stats-strip">
+          <div class="home-stat-tile">
+            <div class="home-stat-lbl">Sessions</div>
+            <div class="home-stat-val" id="hstat-sessions">—</div>
           </div>
-          <div class="home-card bio" onclick="goView('bio')">
-            <div class="home-card-title">Bio Data</div>
-            <div class="home-card-sub">Body measurements</div>
-            <div class="home-card-accent"></div>
+          <div class="home-stat-tile">
+            <div class="home-stat-lbl">Avg RIR</div>
+            <div class="home-stat-val" id="hstat-rir">—</div>
           </div>
-          <div class="home-card history" onclick="goView('history')">
-            <div class="home-card-title">History</div>
-            <div class="home-card-sub">Past sessions</div>
-            <div class="home-card-accent"></div>
+          <div class="home-stat-tile">
+            <div class="home-stat-lbl">PRs</div>
+            <div class="home-stat-val" id="hstat-prs">—</div>
           </div>
-          <div class="home-card program" onclick="goView('program')">
-            <div class="home-card-title">Program</div>
-            <div class="home-card-sub">Full training plan</div>
-            <div class="home-card-accent"></div>
-          </div>
-          <div class="home-card recovery" onclick="goView('recovery')" style="grid-column:1/-1;">
-            <div class="home-card-title">Recovery</div>
-            <div class="home-card-sub">Whoop integration coming soon</div>
-            <div style="margin-top:8px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);">Connect Whoop to unlock recovery scores, HRV & sleep data</div>
-            <div class="home-card-accent"></div>
+          <div class="home-stat-tile">
+            <div class="home-stat-lbl">Streak</div>
+            <div class="home-stat-val" id="hstat-streak">—</div>
+            <div class="home-stat-sub">weeks</div>
           </div>
         </div>
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Program powered by</div>
-            <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text2);text-decoration:none;">Passion8te Lifestyle</a>
+
+        <!-- STACKED LIST -->
+        <div class="home-stack">
+
+          <!-- WORKOUTS — primary card with live progress -->
+          <div class="home-card workouts ripple-host" onclick="goView('workouts')">
+            <div class="home-card-left-bar"></div>
+            <div class="home-card-inner">
+              <div class="home-card-body">
+                <div class="home-card-title" style="color:var(--red);">Workouts</div>
+                <div class="home-card-sub" id="home-workout-day">Log session & RIR</div>
+                <div class="home-card-meta" id="home-session-clock" style="display:none;color:var(--red);font-weight:600;"></div>
+              </div>
+              <div class="home-card-right">
+                <div class="home-card-badge" id="home-workout-pct"></div>
+                <div class="home-card-arrow">›</div>
+              </div>
+            </div>
+            <div class="home-card-progress" id="home-workout-progress" style="display:none;">
+              <div class="home-card-prog-labels">
+                <span id="home-prog-label">0 / 0 logged</span>
+                <span id="home-prog-pct">0%</span>
+              </div>
+              <div class="home-card-prog-track">
+                <div class="home-card-prog-fill" id="home-prog-fill" style="width:0%"></div>
+              </div>
+            </div>
           </div>
-          <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);text-decoration:none;font-weight:600;">Visit →</a>
+
+          <!-- HISTORY -->
+          <div class="home-card history ripple-host" onclick="goView('history')">
+            <div class="home-card-left-bar"></div>
+            <div class="home-card-inner">
+              <div class="home-card-body">
+                <div class="home-card-title">History</div>
+                <div class="home-card-sub" id="home-history-sub">Past sessions</div>
+              </div>
+              <div class="home-card-right">
+                <div class="home-card-arrow">›</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROGRAM -->
+          <div class="home-card program ripple-host" onclick="goView('program')">
+            <div class="home-card-left-bar"></div>
+            <div class="home-card-inner">
+              <div class="home-card-body">
+                <div class="home-card-title">Program</div>
+                <div class="home-card-sub" id="home-program-sub">Full training plan</div>
+              </div>
+              <div class="home-card-right">
+                <div class="home-card-arrow">›</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BIO DATA -->
+          <div class="home-card bio ripple-host" onclick="goView('bio')">
+            <div class="home-card-left-bar"></div>
+            <div class="home-card-inner">
+              <div class="home-card-body">
+                <div class="home-card-title">Bio Data</div>
+                <div class="home-card-sub">Body measurements</div>
+              </div>
+              <div class="home-card-right">
+                <div class="home-card-arrow">›</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECOVERY — dimmed, coming soon -->
+          <div class="home-card recovery ripple-host" onclick="goView('recovery')" style="opacity:0.45;">
+            <div class="home-card-left-bar"></div>
+            <div class="home-card-inner">
+              <div class="home-card-body">
+                <div class="home-card-title">Recovery</div>
+                <div class="home-card-sub">Whoop — coming soon</div>
+              </div>
+              <div class="home-card-right">
+                <div class="home-card-badge dim">Soon</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);">Built by <span style="color:var(--text2);font-weight:600;">SheppLabs</span></div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;" id="home-trainer-name"></div>
         </div>
       </div>
     </div>
@@ -474,6 +620,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     </div>
 
     <!-- PROGRAM -->
+    <div id="view-calendar" class="view" style="padding:16px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px;" id="cal-month-label"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <button onclick="calPrevMonth()" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:6px 14px;cursor:pointer;">PREV</button>
+        <button onclick="calNextMonth()" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:6px 14px;cursor:pointer;">NEXT</button>
+      </div>
+      <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px;"></div>
+      <div id="cal-summary" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;"></div>
+    </div>
+
     <div id="view-program" class="view">
       <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">PROGRAM</div></div>
       <div class="view-body" id="program-content"><div class="loading"><div class="spinner"></div></div></div>
@@ -514,12 +670,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   </div>
 
   <!-- FLOATING REST TIMER -->
-  <div class="rest-timer-bar" id="rest-timer-bar">
-    <div>
-      <div class="rest-timer-label">REST<span id="rest-timer-exname" style="color:var(--text3);font-size:10px;margin-left:4px;"></span></div>
-      <div class="rest-timer-track"><div class="rest-timer-fill" id="rest-timer-fill" style="width:100%"></div></div>
+  <!-- REST TIMER MODAL -->
+  <div class="rest-modal" id="rest-timer-bar">
+    <!-- stat chips -->
+    <div class="rest-chips">
+      <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-sets">3x12</span></div>
+      <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-duration">—</span></div>
+      <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-cal">— Cells</span></div>
     </div>
-    <div class="rest-timer-val" id="rest-timer-val">0:00</div>
+    <!-- circular ring -->
+    <div class="rest-ring-wrap">
+      <svg viewBox="0 0 220 220">
+        <circle class="rest-ring-bg" cx="110" cy="110" r="96"/>
+        <circle class="rest-ring-fg" id="rest-ring-fg" cx="110" cy="110" r="96"
+          stroke-dasharray="603.2" stroke-dashoffset="0"/>
+      </svg>
+      <div class="rest-ring-center">
+        <div class="rest-time-val" id="rest-timer-val">0:00</div>
+        <div class="rest-time-label">Minutes</div>
+      </div>
+    </div>
+    <!-- exercise name -->
+    <div class="rest-ex-name" id="rest-timer-exname"></div>
+    <!-- skip -->
     <button class="rest-skip-btn" onclick="skipRest()">SKIP</button>
   </div>
 
@@ -527,8 +700,42 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     <button class="bnav-btn active" id="bnav-home" onclick="goHome()">HOME</button>
     <button class="bnav-btn" id="bnav-workouts" onclick="goView('workouts')">WORKOUT</button>
     <button class="bnav-btn" id="bnav-history" onclick="goView('history')">HISTORY</button>
+    <button class="bnav-btn" id="bnav-calendar" onclick="goView('calendar')">CALENDAR</button>
     <button class="bnav-btn" id="bnav-program" onclick="goView('program')">PROGRAM</button>
   </nav>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;display:none;align-items:flex-end;justify-content:center;padding:0;">
+  <div style="background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;width:100%;max-width:480px;padding:1.5rem 1.25rem 2rem;animation:slideUp 0.3s ease;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;">SETTINGS</div>
+      <button onclick="document.getElementById('settings-modal').style.display='none'" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px;">Trainer</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--text);" id="settings-ptname"></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="settings-ptcode"></div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:6px;">Logged In As</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--red);" id="settings-clientname"></div>
+    </div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:10px;">Google Sync</div>
+    <div id="auth-status-block" style="margin-bottom:12px;">
+      <div class="auth-status">
+        <div style="display:flex;align-items:center;gap:8px;"><div class="auth-status-dot" id="auth-dot"></div><span class="auth-status-text" id="auth-status-text">Not signed in</span></div>
+        <button class="signout-btn" id="signout-btn" onclick="signOut()" style="display:none;">SIGN OUT</button>
+      </div>
+    </div>
+    <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Sign in with Google
+    </button>
+    <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);text-align:center;">
+      <button onclick="resetApp()" style="background:none;border:none;color:var(--text3);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;padding:8px;">Clear Local Data</button>
+    </div>
+  </div>
 </div>
 
 <!-- SESSION COMPLETE OVERLAY -->
@@ -743,12 +950,22 @@ const QUOTES=[
 {text:"Every day is another chance to get stronger.",author:"Unknown"},
 ];
 
-let sheetId='1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM',apiKey='',sheetName='Sheet1',bioTab='Bio';
+// ── PERSONAL APP CONFIG ──
+const SHEET_ID='1fIbU3iaZFFoymzy1f4loSdxTbbEjl0CvrthOwCkqbHM';
+const API_KEY='AIzaSyA4Ca-z2DJw6BCKyLRy9KAdQVVsERo8V9M';
+const CLIENT_TAB='Sheet1';
+const CLIENT_NAME='Runako';
+const PT_NAME='SheppLabs';
+
+
+let sheetId=SHEET_ID,apiKey=API_KEY,sheetName=CLIENT_TAB,bioTab='Bio';
+let clientName=CLIENT_NAME,ptCode='',ptDisplayName=PT_NAME;
 let days=[],activeDay=0;
 let rirLog={},rpeLog={},notesLog={},setsLog={},history=[],prs={};
 let selectedRIR={};
 let sessionStart=null,sessionTimer=null;
-let restTimer=null,restTotal=0,restRemaining=0,restExName='';
+let restTimer=null,restTotal=0,restRemaining=0,restExName='',restEndTime=0;
+let currentExercise=null;
 
 // ── INIT ──
 function initSplash(){
@@ -764,10 +981,9 @@ function initSplash(){
 
 function enterApp(){
   document.getElementById('splash').style.display='none';
-  const key=localStorage.getItem('tl_key');
-  if(!key){document.getElementById('setup').style.display='flex';}
-  else{document.getElementById('app').style.display='flex';loadAll();}
+  enterMainApp();
 }
+
 
 function shouldShowSplash(){
   const last=localStorage.getItem('tl_last_splash');
@@ -776,33 +992,46 @@ function shouldShowSplash(){
   return false;
 }
 
-function connect(){
-  const sid=document.getElementById('inp-sid').value.trim();
-  const key=document.getElementById('inp-key').value.trim();
-  const tab=document.getElementById('inp-tab').value.trim()||'Sheet1';
-  const bio=document.getElementById('inp-bio').value.trim()||'Bio';
-  if(!sid||!key){showSetupError('Please enter Sheet ID and API Key.');return;}
-  sheetId=sid;apiKey=key;sheetName=tab;bioTab=bio;
-  localStorage.setItem('tl_sid',sid);localStorage.setItem('tl_key',key);
-  localStorage.setItem('tl_tab',tab);localStorage.setItem('tl_bio',bio);
-  document.getElementById('setup').style.display='none';
+
+
+
+
+
+
+function enterMainApp(){
+  const setup=document.getElementById('setup');
+  if(setup) setup.style.display='none';
   document.getElementById('app').style.display='flex';
   loadAll();
 }
 
-function showSetupError(msg){
-  const el=document.getElementById('setup-error');
-  el.textContent=msg;el.style.display='block';
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light-mode');
+  localStorage.setItem('tl_theme',isLight?'light':'dark');
+  document.getElementById('theme-toggle-btn').innerHTML=isLight?'&#9790;':'&#9788;';
+}
+
+function applyStoredTheme(){
+  const theme=localStorage.getItem('tl_theme');
+  if(theme==='light'){
+    document.body.classList.add('light-mode');
+    const btn=document.getElementById('theme-toggle-btn');
+    if(btn) btn.innerHTML='&#9790;';
+  }
 }
 
 function goSettings(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('setup').style.display='flex';
-  document.getElementById('inp-sid').value=sheetId;
-  document.getElementById('inp-key').value=apiKey;
-  document.getElementById('inp-tab').value=sheetName;
-  document.getElementById('inp-bio').value=bioTab;
-  document.getElementById('setup-error').style.display='none';
+  const modal=document.getElementById('settings-modal');
+  document.getElementById('settings-ptname').textContent=PT_NAME;
+  document.getElementById('settings-ptcode').textContent='Personal Edition';
+  document.getElementById('settings-clientname').textContent=CLIENT_NAME;
+  modal.style.display='flex';
+}
+
+function resetApp(){
+  if(!confirm('This will sign you out and clear all local data. Are you sure?')) return;
+  localStorage.clear();
+  location.reload();
 }
 
 const GOOGLE_CLIENT_ID='160341454196-qksshbethqn8nqke1tvsplujpbpfe1rr.apps.googleusercontent.com';
@@ -948,24 +1177,16 @@ async function writeToSheet(rowIndex, rir, rpe, notes){
 }
 
 window.onload=function(){
+  applyStoredTheme();
   initSplash();
-  const sid=localStorage.getItem('tl_sid'),key=localStorage.getItem('tl_key');
-  const tab=localStorage.getItem('tl_tab')||'Sheet1';
-  const bio=localStorage.getItem('tl_bio')||'Bio';
+  // Restore local data
   restoreHistoryFromBackup=function(){};
   ['tl_rir','tl_rpe','tl_notes','tl_sets','tl_history','tl_prs'].forEach(k=>{
     const v=localStorage.getItem(k);
     if(v) try{({tl_rir:rirLog,tl_rpe:rpeLog,tl_notes:notesLog,tl_sets:setsLog,tl_history:history,tl_prs:prs})[k]=JSON.parse(v);}catch(e){}
   });
-  if(key){sheetId=sid||sheetId;apiKey=key;sheetName=tab;bioTab=bio;}
   // Restore history backup if needed
   if(history.length===0){const bk=localStorage.getItem('tl_history_backup');if(bk)try{history=JSON.parse(bk);}catch(e){}}
-  // Skip splash if already seen today
-  if(key&&!shouldShowSplash()){
-    document.getElementById('splash').style.display='none';
-    document.getElementById('app').style.display='flex';
-    loadAll();
-  }
   // PWA manifest
   injectPWA();
   // Init Google auth after GSI loads
@@ -986,8 +1207,50 @@ window.onload=function(){
   },55*60*1000);
   // Show auth status if previously connected
   const authHint=localStorage.getItem('tl_auth_hint');
-  if(authHint) updateTopbarAuthDot(false);
+  if(authHint) updateTopbarAuthDot(authHint==='granted');
+  // Add long-press on TRAIN logo for admin reset (600ms)
+  const logo=document.querySelector('.topbar-logo');
+  if(logo){
+    let pressTimer;
+    logo.addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>{if(confirm('Reset app? This will clear your trainer code and all local data.'))resetApp();},600);},{passive:true});
+    logo.addEventListener('touchend',()=>clearTimeout(pressTimer));
+  }
+  // Attach ripple to interactive elements
+  attachRipples();
 };
+
+// ── RIPPLE EFFECT ──
+function attachRipples(){
+  document.addEventListener('pointerdown',function(e){
+    const target=e.target.closest('.home-card,.bnav-btn,.btn-save,.back-btn,.day-pill,.splash-btn');
+    if(!target) return;
+    if(!target.classList.contains('ripple-host')) target.classList.add('ripple-host');
+    const r=document.createElement('div');
+    r.className='ripple-wave';
+    const rect=target.getBoundingClientRect();
+    r.style.left=(e.clientX-rect.left)+'px';
+    r.style.top=(e.clientY-rect.top)+'px';
+    target.appendChild(r);
+    setTimeout(()=>r.remove(),520);
+  });
+}
+
+// ── SCROLL REVEAL for exercise cards ──
+function initScrollReveal(){
+  if(!window.IntersectionObserver) {
+    document.querySelectorAll('.ex-card').forEach(c=>c.classList.add('revealed'));
+    return;
+  }
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach((entry,i)=>{
+      if(entry.isIntersecting){
+        setTimeout(()=>entry.target.classList.add('revealed'),i*40);
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -20px 0px'});
+  document.querySelectorAll('.ex-card:not(.revealed)').forEach(c=>obs.observe(c));
+}
 
 function generateAppIcon(){
   try{
@@ -1074,12 +1337,16 @@ async function fetchTab(tab){
 // ── PARSE ──
 function parseWorkout(rows){
   days=[];let cur=null;
-  rows.forEach((row,i)=>{
-    if(i===0) return;
-    const dc=(row[0]||'').trim(),focus=(row[1]||'').trim(),ex=(row[2]||'').trim();
-    if(!ex&&!dc) return;
-    if(dc.match(/^day\s*\d+/i)){cur={label:dc,focus:focus||'',exercises:[]};days.push(cur);return;}
-    if(!cur||!ex) return;
+  // Stop parsing program when we hit BIO DATA or HISTORY marker
+  for(let i=0;i<rows.length;i++){
+    if(i===0) continue;
+    const row=rows[i];
+    const dc=(row[0]||'').trim();
+    if(dc.toUpperCase()==='BIO DATA'||dc.toUpperCase()==='HISTORY') break;
+    const focus=(row[1]||'').trim(),ex=(row[2]||'').trim();
+    if(!ex&&!dc) continue;
+    if(dc.match(/^day\s*\d+/i)){cur={label:dc,focus:focus||'',exercises:[]};days.push(cur);continue;}
+    if(!cur||!ex) continue;
     cur.exercises.push({
       name:ex,sets:row[3]||'',reps:row[4]||'',weight:row[5]||'',
       rest:row[10]||'',link:row[11]||'',sheetRIR:row[12]||'',comments:row[13]||'',
@@ -1088,12 +1355,52 @@ function parseWorkout(rows){
       isSuperset:(row[10]||'').toLowerCase().includes('superset'),
       rowIndex:i
     });
-  });
+  }
 }
 
+// Parse BIO DATA section from client tab rows
+function parseBioSection(rows){
+  let bioStart=-1;
+  for(let i=0;i<rows.length;i++){
+    if((rows[i][0]||'').trim().toUpperCase()==='BIO DATA'){bioStart=i+1;break;}
+  }
+  if(bioStart<0) return null;
+  // Collect bio rows until HISTORY marker or end
+  const bioRows=[];
+  for(let i=bioStart;i<rows.length;i++){
+    const marker=(rows[i][0]||'').trim().toUpperCase();
+    if(marker==='HISTORY') break;
+    if(rows[i].some(c=>c)) bioRows.push(rows[i]);
+  }
+  return bioRows.length>=2?bioRows:null;
+}
+
+// Parse HISTORY section from client tab rows
+function parseHistorySection(rows){
+  let histStart=-1;
+  for(let i=0;i<rows.length;i++){
+    if((rows[i][0]||'').trim().toUpperCase()==='HISTORY'){histStart=i+1;break;}
+  }
+  if(histStart<0) return {headerRow:-1,dataStartRow:-1,rows:[]};
+  // Skip the header row (Date, Day, Exercise, RIR, RPE, Notes)
+  const dataStartRow=histStart+1;
+  return {headerRow:histStart,dataStartRow,sheetDataStartRow:dataStartRow+1};
+}
+
+// Track where history section lives in the sheet
+let historySheetRow=-1; // sheet row (1-based) where new history entries go (after existing ones)
+
 async function loadAll(){
+  const greetEl=document.getElementById('home-greeting-name');
+  if(greetEl&&clientName){
+    greetEl.innerHTML=clientName.toUpperCase()+' WORKOUT';
+  }
+  // Populate trainer name
+  const trainerEl=document.getElementById('home-trainer-name');
+  if(trainerEl&&ptDisplayName) trainerEl.textContent=ptDisplayName;
   setSyncState('syncing');
   try{
+    // Everything lives in one client tab now
     const rows=await fetchTab(sheetName);
     parseWorkout(rows);
     if(!days.length){
@@ -1105,11 +1412,26 @@ async function loadAll(){
     activeDay=lastDay<days.length?lastDay:0;
     renderDayScroll();renderWorkout();renderProgram();renderHistory();
     document.getElementById('prog-wrap').style.display='block';updateProgress();
-    try{const br=await fetchTab(bioTab);renderBio(br);}
-    catch(e){document.getElementById('bio-content').innerHTML='<div class="empty-state">Could not load bio data.<br>Check the bio tab name in Settings.</div>';}
+    updateHomeStats();updateHomeWorkoutCard();
+    // Parse bio from same tab
+    const bioRows=parseBioSection(rows);
+    if(bioRows){renderBio(bioRows);}
+    else{document.getElementById('bio-content').innerHTML='<div class="empty-state">No bio data found.<br>Ask your trainer to add a BIO DATA section to your tab.</div>';}
+    // Calculate where history rows start in the sheet (for write-back)
+    const histInfo=parseHistorySection(rows);
+    if(histInfo.sheetDataStartRow>0){
+      // Count existing history rows to know where to append
+      let existingCount=0;
+      if(histInfo.dataStartRow>0){
+        for(let i=histInfo.dataStartRow;i<rows.length;i++){
+          if(rows[i]&&rows[i].some(c=>c)) existingCount++;
+        }
+      }
+      historySheetRow=histInfo.sheetDataStartRow+existingCount;
+    }
   }catch(e){
     setSyncState('error');
-    document.getElementById('workout-cards').innerHTML=`<div class="error-box"><strong>Could not load:</strong> ${e.message}<br><br>Check your Sheet ID and API Key. Make sure the sheet is shared as Viewer.</div>`;
+    document.getElementById('workout-cards').innerHTML=`<div class="error-box"><strong>Could not load:</strong> ${e.message}<br><br>Check your Sheet ID and API Key. Make sure the sheet is shared as Editor.</div>`;
   }
 }
 
@@ -1137,21 +1459,40 @@ function handleSwipeEnd(e){
 
 function goHome(){
   stopSessionClock();
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-home').classList.add('active');
+  transitionToView('home');
   document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('bnav-home').classList.add('active');
 }
 
 function goView(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(`view-${name}`).classList.add('active');
+  transitionToView(name);
   document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
   const nb=document.getElementById(`bnav-${name}`);
   if(nb) nb.classList.add('active');
   if(name==='workouts') startSessionClock();
   if(!apiKey){goSettings();return;}
   if(days.length===0) loadAll();
+}
+
+function transitionToView(name){
+  const current=document.querySelector('.view.active');
+  const next=document.getElementById(`view-${name}`);
+  if(!next||current===next) return;
+  if(current){
+    current.style.opacity='0';
+    current.style.transform='translateY(-6px)';
+    setTimeout(()=>{
+      current.classList.remove('active');
+      current.style.opacity='';
+      current.style.transform='';
+    },160);
+  }
+  setTimeout(()=>{
+    next.classList.add('active');
+    // Scroll to top of new view
+    const contentEl=document.getElementById('main-content');
+    if(contentEl) contentEl.scrollTop=0;
+  },current?80:0);
 }
 
 // ── SESSION CLOCK ──
@@ -1187,31 +1528,56 @@ function getSessionDuration(){
 // ── REST TIMER ──
 function startRestTimer(seconds,exName){
   if(restTimer) clearInterval(restTimer);
-  restTotal=seconds;restRemaining=seconds;restExName=exName;
+  restTotal=seconds;restExName=exName;
+  // Use wall-clock end time so backgrounding doesn't pause the timer
+  restEndTime=Date.now()+(seconds*1000);
   const bar=document.getElementById('rest-timer-bar');
+  // Populate chips
+  const totalSets=currentExercise?currentExercise.sets:0;
+  const reps=currentExercise?currentExercise.reps:'';
+  document.getElementById('rest-chip-sets').textContent=(totalSets&&reps)?`${totalSets}x${reps}`:'Sets';
+  document.getElementById('rest-chip-duration').textContent=seconds>=60?`${Math.round(seconds/60)} Minutes`:`${seconds} Sec`;
+  document.getElementById('rest-chip-cal').textContent=`${Math.round(seconds*0.075)} Cells`;
+  document.getElementById('rest-timer-exname').textContent=exName||'';
   bar.classList.add('active');
-  document.getElementById('rest-timer-exname').textContent=' — '+exName;
   updateRestDisplay();
   restTimer=setInterval(()=>{
-    restRemaining--;
+    restRemaining=Math.max(0,Math.round((restEndTime-Date.now())/1000));
     updateRestDisplay();
     if(restRemaining<=0){
       clearInterval(restTimer);restTimer=null;
       if(navigator.vibrate) navigator.vibrate([200,100,200]);
       bar.classList.remove('active');
     }
-  },1000);
+  },500);
+  // Catch up immediately when tab becomes visible again
+  document.addEventListener('visibilitychange',onVisibilityChange);
+}
+
+function onVisibilityChange(){
+  if(document.visibilityState==='visible'&&restTimer){
+    restRemaining=Math.max(0,Math.round((restEndTime-Date.now())/1000));
+    updateRestDisplay();
+    if(restRemaining<=0){
+      clearInterval(restTimer);restTimer=null;
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+      document.getElementById('rest-timer-bar').classList.remove('active');
+    }
+  }
 }
 
 function updateRestDisplay(){
   const m=Math.floor(restRemaining/60),s=restRemaining%60;
   document.getElementById('rest-timer-val').textContent=`${m}:${s.toString().padStart(2,'0')}`;
-  const pct=(restRemaining/restTotal)*100;
-  document.getElementById('rest-timer-fill').style.width=pct+'%';
+  // SVG ring: circumference = 2*pi*96 ≈ 603.2
+  const circ=603.2;
+  const pct=restTotal>0?restRemaining/restTotal:0;
+  document.getElementById('rest-ring-fg').style.strokeDashoffset=circ*(1-pct);
 }
 
 function skipRest(){
   if(restTimer){clearInterval(restTimer);restTimer=null;}
+  document.removeEventListener('visibilitychange',onVisibilityChange);
   document.getElementById('rest-timer-bar').classList.remove('active');
 }
 
@@ -1264,10 +1630,8 @@ function renderWorkout(){
     }
   }
   document.getElementById('workout-cards').innerHTML=cardsHtml;
-  document.querySelectorAll('.ex-card').forEach((card,i)=>{
-    card.style.animationDelay=(i*0.05)+'s';
-    card.classList.add('animate-in');
-  });
+  // Scroll reveal — triggers on intersection, not all at once
+  setTimeout(initScrollReveal, 50);
 }
 
 function buildCard(ex,di,ei){
@@ -1421,6 +1785,7 @@ function toggleSet(di,ei,setIdx){
   // Start timer AFTER render so DOM is stable
   if(shouldStartTimer){
     const setLabel=isLastSet?`${ex.name} — Final set rest`:`${ex.name} — Set ${setIdx+2} of ${totalSets}`;
+    currentExercise=ex;
     setTimeout(()=>startRestTimer(restSecs,setLabel),100);
   }
   // Scroll active card into view smoothly
@@ -1479,7 +1844,7 @@ async function saveRIR(di,ei,restStr,exName){
     });
   }
   const restSecs=parseRestSeconds(restStr);
-  if(restSecs>0) startRestTimer(restSecs,exName);
+  if(restSecs>0){currentExercise=ex;startRestTimer(restSecs,exName);}
   renderWorkout();updateProgress();renderHistory();
   checkSessionComplete(di);
 }
@@ -1554,9 +1919,13 @@ function getStreak(){
 
 function saveToHistory(di,ei,rir,notes,rpe){
   const day=days[di];const ex=day?.exercises[ei];if(!ex) return;
-  const ds=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const now=new Date();
+  const ds=now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const iso=now.toISOString().slice(0,10); // YYYY-MM-DD for calendar
   let entry=history.find(h=>h.date===ds&&h.dayLabel===day.label);
-  if(!entry){entry={date:ds,dayLabel:day.label,entries:[]};history.unshift(entry);}
+  if(!entry){entry={date:ds,iso,dayLabel:day.label,entries:[],duration:0};history.unshift(entry);}
+  if(!entry.iso) entry.iso=iso; // backfill older entries
+  entry.duration=getSessionDuration();
   const ex2=entry.entries.find(e=>e.name===ex.name);
   const isPR=prs[ex.name]&&rir!==undefined&&rir<=(prs[ex.name].rir||99);
   if(ex2){ex2.rir=rir;ex2.notes=notes;ex2.rpe=rpe;ex2.pr=isPR;}
@@ -1614,10 +1983,93 @@ function showSessionComplete(di){
 
   document.getElementById('session-complete').style.display='flex';
   if(navigator.vibrate) navigator.vibrate([100,50,100,50,200]);
+  // Write history to sheet
+  writeHistoryToSheet(di);
 }
 
 function closeSessionComplete(){
   document.getElementById('session-complete').style.display='none';
+}
+
+async function writeHistoryToSheet(di){
+  if(!googleAccessToken) return;
+  const day=days[di];if(!day) return;
+  if(historySheetRow<1) return;
+  const dateStr=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const timeStr=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const entries=day.exercises
+    .filter(ex=>!ex.isWarmup)
+    .map(ex=>{
+      const key=`${di}_${ex.name}`;
+      return {name:ex.name,rir:rirLog[key],rpe:rpeLog[key],notes:notesLog[key]||''};
+    })
+    .filter(e=>e.rir!==undefined||e.rpe!==undefined);
+  if(!entries.length) return;
+  // Build rows — one per exercise, date/day only on first row
+  const sheetRows=entries.map((e,i)=>[
+    i===0?`${dateStr} ${timeStr}`:'',
+    i===0?day.label:'',
+    e.name,
+    e.rir!==undefined?String(e.rir):'',
+    e.rpe!==undefined?String(e.rpe):'',
+    e.notes||''
+  ]);
+  try{
+    const range=encodeURIComponent(`${sheetName}!A${historySheetRow}:F${historySheetRow+sheetRows.length-1}`);
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?valueInputOption=RAW`;
+    const res=await fetch(url,{
+      method:'PUT',
+      headers:{'Authorization':`Bearer ${googleAccessToken}`,'Content-Type':'application/json'},
+      body:JSON.stringify({values:sheetRows})
+    });
+    if(res.ok){
+      historySheetRow+=sheetRows.length;
+      console.log('History written to sheet, next row:',historySheetRow);
+    }
+  }catch(e){console.error('History write error:',e);}
+}
+
+// ── HOME SCREEN LIVE DATA ──
+function updateHomeStats(){
+  const total=history.length;
+  const allRIR=history.flatMap(h=>h.entries.map(e=>e.rir)).filter(r=>r!==undefined);
+  const avg=allRIR.length>0?(allRIR.reduce((a,b)=>a+b,0)/allRIR.length).toFixed(1):'—';
+  const totalPRs=Object.keys(prs).length;
+  const streak=getStreak();
+  const el=id=>document.getElementById(id);
+  if(el('hstat-sessions')) el('hstat-sessions').textContent=total||'—';
+  if(el('hstat-rir')) el('hstat-rir').textContent=avg;
+  if(el('hstat-prs')) el('hstat-prs').textContent=totalPRs||'—';
+  if(el('hstat-streak')) el('hstat-streak').textContent=streak||'—';
+  // History sub
+  if(el('home-history-sub')) el('home-history-sub').textContent=total>0?`${total} session${total!==1?'s':''} · Avg RIR ${avg}`:'Past sessions';
+  // Program sub
+  if(el('home-program-sub')&&days.length) el('home-program-sub').textContent=`${days.length} day${days.length!==1?'s':''} · ${ptDisplayName||'Your trainer'}`;
+}
+
+function updateHomeWorkoutCard(){
+  const day=days[activeDay];
+  if(!day) return;
+  const total=day.exercises.filter(ex=>!ex.isWarmup&&ex.sets!=='1').length;
+  let done=0;
+  day.exercises.forEach(ex=>{
+    if(ex.isWarmup||ex.sets==='1') return;
+    const key=`${activeDay}_${ex.name}`;
+    if(rirLog[key]!==undefined||ex.sheetRIR) done++;
+  });
+  const pct=total>0?Math.round(done/total*100):0;
+  const dayEl=document.getElementById('home-workout-day');
+  const pctEl=document.getElementById('home-workout-pct');
+  const progEl=document.getElementById('home-workout-progress');
+  const labelEl=document.getElementById('home-prog-label');
+  const pctLabelEl=document.getElementById('home-prog-pct');
+  const fillEl=document.getElementById('home-prog-fill');
+  if(dayEl) dayEl.textContent=`${day.label}${day.focus?' · '+day.focus:''}`;
+  if(pctEl) pctEl.textContent=done>0?pct+'%':'';
+  if(progEl) progEl.style.display=total>0?'block':'none';
+  if(labelEl) labelEl.textContent=`${done} / ${total} logged`;
+  if(pctLabelEl) pctLabelEl.textContent=pct+'%';
+  if(fillEl) fillEl.style.width=pct+'%';
 }
 
 // ── PROGRESS ──
@@ -1634,6 +2086,8 @@ function updateProgress(){
   document.getElementById('prog-label').textContent=`${done} / ${total} logged`;
   document.getElementById('prog-pct').textContent=pct+'%';
   document.getElementById('prog-fill').style.width=pct+'%';
+  // Keep home card in sync
+  updateHomeWorkoutCard();
 }
 
 // ── PROGRAM ──
@@ -1645,10 +2099,10 @@ function renderProgram(){
   },100);
   document.getElementById('program-content').innerHTML=`<div style="margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:space-between;">
     <div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Program by</div>
-      <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);text-decoration:none;">Passion8te Lifestyle</a>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:3px;">Trainer</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);">${ptDisplayName||'Your Trainer'}</div>
     </div>
-    <a href="https://www.passion8telifestyle.com/" target="_blank" style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);text-decoration:none;font-weight:600;">Visit →</a>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);">${clientName}</div>
   </div>`+days.map((day,i)=>`
     <div class="prog-day-block">
       <div class="prog-day-head" style="${i===activeDay?'border-left:3px solid var(--red);padding-left:13px;':''}"><div class="prog-day-title" style="${i===activeDay?'color:var(--red);':''}"> ${day.label}</div><div class="prog-day-focus">${day.focus}</div></div>
@@ -1924,6 +2378,102 @@ function selectBioDate(i){
 }
 
 // ── HISTORY ──
+// ── CALENDAR ──
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+
+function calPrevMonth(){
+  calMonth--;if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+function calNextMonth(){
+  calMonth++;if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const now=new Date();
+  const todayISO=now.toISOString().slice(0,10);
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent=monthNames[calMonth]+' '+calYear;
+
+  // Build a map of ISO date -> session entries for fast lookup
+  const sessionMap={};
+  history.forEach(h=>{
+    let iso=h.iso;
+    // Backfill: parse "Sun 12 Oct" style dates that predate iso field
+    if(!iso){
+      try{
+        const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+        const parts=h.date.split(' ').filter(Boolean);
+        // parts: ["Sun","12","Oct"] or ["12","Oct"] etc
+        const dayPart=parts.find(p=>/^\d+$/.test(p));
+        const monPart=parts.find(p=>months[p]!==undefined);
+        if(dayPart&&monPart){
+          const yr=now.getFullYear();
+          const d=new Date(yr,months[monPart],parseInt(dayPart));
+          // If the date is in the future, it must be last year
+          if(d>now) d.setFullYear(yr-1);
+          iso=d.toISOString().slice(0,10);
+        }
+      }catch(e){}
+    }
+    if(!iso) return;
+    if(!sessionMap[iso]) sessionMap[iso]={entries:[],duration:0,labels:[]};
+    sessionMap[iso].entries.push(...(h.entries||[]));
+    sessionMap[iso].duration=Math.max(sessionMap[iso].duration,h.duration||0);
+    if(h.dayLabel) sessionMap[iso].labels.push(h.dayLabel);
+  });
+
+  // Calendar grid
+  const firstDay=new Date(calYear,calMonth,1).getDay(); // 0=Sun
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const dowLabels=['S','M','T','W','T','F','S'];
+  let gridHTML=dowLabels.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+
+  // Empty cells before first day
+  for(let i=0;i<firstDay;i++) gridHTML+=`<div class="cal-day empty"></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const iso=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sess=sessionMap[iso];
+    const isToday=iso===todayISO;
+    const cls=['cal-day',sess?'has-session':'',isToday?'today':''].filter(Boolean).join(' ');
+    const dur=sess&&sess.duration>0?`<div class="cal-day-dur">${sess.duration}m</div>`:'';
+    gridHTML+=`<div class="${cls}"><div class="cal-day-num">${d}</div>${dur}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=gridHTML;
+
+  // Monthly summary
+  const monthISOs=Object.keys(sessionMap).filter(k=>k.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`));
+  const totalSessions=monthISOs.length;
+  const totalMins=monthISOs.reduce((s,k)=>s+(sessionMap[k].duration||0),0);
+  const totalExercises=monthISOs.reduce((s,k)=>s+sessionMap[k].entries.length,0);
+  const daysInMo=new Date(calYear,calMonth+1,0).getDate();
+  const isCurrentMonth=calYear===now.getFullYear()&&calMonth===now.getMonth();
+  const daysPassed=isCurrentMonth?now.getDate():daysInMo;
+  const rate=daysPassed>0?Math.round((totalSessions/daysPassed)*100):0;
+
+  document.getElementById('cal-summary').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:4px;">Sessions</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--red);">${totalSessions}</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:4px;">Time Trained</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);">${totalMins>0?totalMins+'m':'—'}</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:4px;">Exercises Logged</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);">${totalExercises}</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:4px;">Consistency</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--text);">${rate}%</div>
+      </div>
+    </div>`;
+}
+
 function renderHistory(){
   const total=history.length;
   const all=history.flatMap(h=>h.entries.map(e=>e.rir)).filter(r=>r!==undefined);
