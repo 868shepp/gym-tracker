@@ -615,7 +615,7 @@ body.light-mode .home-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.10);}
 
     <!-- HISTORY -->
     <div id="view-history" class="view">
-      <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">HISTORY</div></div>
+      <div class="view-header"><button class="back-btn" onclick="goHome()">BACK</button><div class="view-title">HISTORY</div><button class="back-btn" onclick="exportWeek()" style="margin-left:auto;background:var(--red);color:#fff;border-color:var(--red);">EXPORT</button></div>
       <div class="view-body" id="history-content"></div>
     </div>
 
@@ -676,7 +676,6 @@ body.light-mode .home-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.10);}
     <div class="rest-chips">
       <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-sets">3x12</span></div>
       <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-duration">—</span></div>
-      <div class="rest-chip"><div class="rest-chip-dot"></div><span id="rest-chip-cal">— Cells</span></div>
     </div>
     <!-- circular ring -->
     <div class="rest-ring-wrap">
@@ -1537,7 +1536,6 @@ function startRestTimer(seconds,exName){
   const reps=currentExercise?currentExercise.reps:'';
   document.getElementById('rest-chip-sets').textContent=(totalSets&&reps)?`${totalSets}x${reps}`:'Sets';
   document.getElementById('rest-chip-duration').textContent=seconds>=60?`${Math.round(seconds/60)} Minutes`:`${seconds} Sec`;
-  document.getElementById('rest-chip-cal').textContent=`${Math.round(seconds*0.075)} Cells`;
   document.getElementById('rest-timer-exname').textContent=exName||'';
   bar.classList.add('active');
   updateRestDisplay();
@@ -1928,8 +1926,9 @@ function saveToHistory(di,ei,rir,notes,rpe){
   entry.duration=getSessionDuration();
   const ex2=entry.entries.find(e=>e.name===ex.name);
   const isPR=prs[ex.name]&&rir!==undefined&&rir<=(prs[ex.name].rir||99);
-  if(ex2){ex2.rir=rir;ex2.notes=notes;ex2.rpe=rpe;ex2.pr=isPR;}
-  else entry.entries.push({name:ex.name,rir,notes,rpe,pr:isPR});
+  const setsLabel=ex.sets&&ex.reps?`${ex.sets}×${ex.reps}`:(ex.sets||'');
+  if(ex2){ex2.rir=rir;ex2.notes=notes;ex2.rpe=rpe;ex2.pr=isPR;ex2.sets=setsLabel;}
+  else entry.entries.push({name:ex.name,rir,notes,rpe,pr:isPR,sets:setsLabel});
   if(history.length>60) history=history.slice(0,60);
   localStorage.setItem('tl_history',JSON.stringify(history));
   // Backup history separately so it's never lost
@@ -2543,6 +2542,142 @@ function renderHistory(){
 }
 
 function extractLink(s){const m=s.match(/https?:\/\/[^\s]+/);return m?m[0]:'#';}
+
+// ── WEEKLY EXPORT ──
+function exportWeek(){
+  // Get Mon–Sun of current week
+  const now=new Date();
+  const day=now.getDay(); // 0=Sun
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-(day===0?6:day-1));
+  monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);
+  sunday.setDate(monday.getDate()+6);
+  sunday.setHours(23,59,59,999);
+
+  // Filter history entries to this week
+  const weekEntries=history.filter(h=>{
+    if(!h.iso) return false;
+    const d=new Date(h.iso);
+    return d>=monday && d<=sunday;
+  });
+
+  // Week label
+  const fmt=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const weekLabel=`${fmt(monday)} – ${fmt(sunday)} ${sunday.getFullYear()}`;
+  const weekNum=getISOWeek(monday);
+
+  // Stats
+  const totalMins=weekEntries.reduce((s,h)=>s+(h.duration||0),0);
+  const h=Math.floor(totalMins/60),m=totalMins%60;
+  const timeStr=totalMins>0?(h>0?`${h}h ${m}m`:`${m}m`):'—';
+  const allRpe=weekEntries.flatMap(h=>h.entries.map(e=>e.rpe)).filter(r=>r!==undefined);
+  const avgRpe=allRpe.length>0?(allRpe.reduce((a,b)=>a+b,0)/allRpe.length).toFixed(1):'—';
+
+  // Build day rows for Mon–Sun
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  let sessionRows='';
+  for(let i=0;i<7;i++){
+    const dayDate=new Date(monday);
+    dayDate.setDate(monday.getDate()+i);
+    const iso=dayDate.toISOString().slice(0,10);
+    const session=weekEntries.find(h=>h.iso===iso);
+    const dateLabel=dayDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    if(!session){
+      sessionRows+=`<div style="background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#111;">${days[i]}</span>
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;background:#f4f4f2;border:1px solid #e8e8e6;padding:3px 10px;border-radius:20px;">Rest Day</span>
+      </div>`;
+    } else {
+      const dur=session.duration>0?(session.duration>=60?`${Math.floor(session.duration/60)}h ${session.duration%60}m`:`${session.duration}m`):'';
+      const exRows=session.entries.map(e=>{
+        const rirVal=e.rir!==undefined?e.rir:'—';
+        let rirBg='rgba(245,158,11,0.10)',rirColor='#b87000';
+        if(e.rir===0){rirBg='rgba(232,50,26,0.08)';rirColor='#e8321a';}
+        else if(e.rir===1){rirBg='rgba(26,158,88,0.08)';rirColor='#1a9e58';}
+        const rpeVal=e.rpe!==undefined?e.rpe:'—';
+        const note=e.notes||'—';
+        return `<tr>
+          <td style="padding:9px 14px;font-size:13px;font-weight:500;color:#111;border-bottom:1px solid #f0f0ee;">${e.name}</td>
+          <td style="padding:9px 14px;font-size:12px;color:#666;text-align:center;border-bottom:1px solid #f0f0ee;">${e.sets||'—'}</td>
+          <td style="padding:9px 14px;text-align:center;border-bottom:1px solid #f0f0ee;"><span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:${rirBg};color:${rirColor};">${rirVal}</span></td>
+          <td style="padding:9px 14px;font-size:13px;font-weight:600;text-align:center;color:#111;border-bottom:1px solid #f0f0ee;">${rpeVal}</td>
+          <td style="padding:9px 14px;font-size:12px;color:#888;font-style:italic;border-bottom:1px solid #f0f0ee;">${note}</td>
+        </tr>`;
+      }).join('');
+      sessionRows+=`<div style="background:#fff;border:1px solid #e8e8e6;border-radius:10px;margin-bottom:12px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #f0f0ee;">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#111;letter-spacing:0.5px;">${days[i]} — ${session.dayLabel}</div>
+            <div style="font-size:12px;color:#888;margin-top:1px;">${dateLabel}</div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#e8321a;">${dur}</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr>
+            <th style="padding:7px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;font-weight:500;text-align:left;border-bottom:1px solid #f0f0ee;">Exercise</th>
+            <th style="padding:7px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;font-weight:500;text-align:center;border-bottom:1px solid #f0f0ee;">Sets</th>
+            <th style="padding:7px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;font-weight:500;text-align:center;border-bottom:1px solid #f0f0ee;">RIR</th>
+            <th style="padding:7px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;font-weight:500;text-align:center;border-bottom:1px solid #f0f0ee;">RPE</th>
+            <th style="padding:7px 14px;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;font-weight:500;text-align:left;border-bottom:1px solid #f0f0ee;">Notes</th>
+          </tr></thead>
+          <tbody>${exRows}</tbody>
+        </table>
+      </div>`;
+    }
+  }
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>TRAIN — Week ${weekNum} Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#f7f6f4;color:#111;font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;padding:32px;max-width:720px;margin:0 auto;}
+    @media print{body{padding:0;background:#fff;}}
+  </style>
+  </head><body>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:14px;border-bottom:3px solid #e8321a;margin-bottom:24px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;line-height:1;">TRA<span style="color:#e8321a;">I</span>N</div>
+    <div style="text-align:right;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#555;">Week ${weekNum} &nbsp;·&nbsp; ${sunday.getFullYear()}</div>
+      <div style="font-size:12px;color:#aaa;margin-top:2px;">${clientName} &nbsp;·&nbsp; ${ptDisplayName}</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">
+    <div style="background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;margin-bottom:4px;">Sessions</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;">${weekEntries.length}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px;">this week</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;margin-bottom:4px;">Total Time</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;">${timeStr}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px;">trained</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;margin-bottom:4px;">Avg RPE</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;">${avgRpe}</div>
+      <div style="font-size:11px;color:#888;margin-top:2px;">out of 10</div>
+    </div>
+  </div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:0.12em;color:#aaa;text-transform:uppercase;margin-bottom:10px;">Sessions &nbsp;·&nbsp; ${weekLabel}</div>
+  ${sessionRows}
+  <div style="margin-top:24px;padding-top:14px;border-top:1px solid #e8e8e6;display:flex;justify-content:space-between;font-size:11px;color:#aaa;">
+    <span>Generated by TRAIN &nbsp;·&nbsp; ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</span>
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;">SHEPPLABS</span>
+  </div>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}
+}
+
+function getISOWeek(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));
+  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
 
 // ── TAB NAV ──
 function switchTab(name){
